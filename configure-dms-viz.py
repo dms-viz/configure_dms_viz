@@ -173,16 +173,18 @@ def format_input_for_json(mut_metric_df,
 
     # Add tooltip columns to required columns
     if tooltip_cols:
-        # Make sure the filter columns are actually in the dataframe at this point
+        # Get the current names of the columns
+        tooltip_column_names = [col for col in tooltip_cols.keys()]
+        # Make sure the tooltip columns are actually in the dataframe at this point
         missing_tooltip_columns = set(
-            tooltip_cols) - set(mut_metric_df.columns)
+            tooltip_column_names) - set(mut_metric_df.columns)
         if missing_tooltip_columns:
             raise ValueError(
                 f"The tooltip column(s): {missing_tooltip_columns} are not present in the data.")
-        cols_to_keep += tooltip_cols
+        cols_to_keep += tooltip_column_names
 
     # Subset the mutation dataframe
-    mut_metric_df = mut_metric_df[cols_to_keep]
+    mut_metric_df = mut_metric_df[list(set(cols_to_keep))]
 
     # Check that all mutant and wildtype residue names are in the provided alphabet
     mut_metric_alphabet = set(
@@ -229,7 +231,8 @@ def format_input_for_json(mut_metric_df,
         'excludeChains': excluded_chains.split(" "),
         'epitopes': epitopes,
         'epitope_colors': epitope_colors,
-        'filter_cols': filter_cols
+        'filter_cols': filter_cols,
+        'tooltip_cols': tooltip_cols
     }
 
     return dataset_dict

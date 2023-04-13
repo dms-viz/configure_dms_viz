@@ -34,7 +34,8 @@ rule create_viz_json:
         structure = lambda wildcards: experiments.loc[experiments['selection'] == wildcards.experiment, 'pdb'].item(),
         include_chains = lambda wildcards: experiments.loc[experiments['selection'] == wildcards.experiment, 'dataChains'].item(),
         exclude_chains = lambda wildcards: experiments.loc[experiments['selection'] == wildcards.experiment, 'excludedChains'].item(),
-        filter_cols = {'times_seen': 'Times Seen', 'effect': 'Functional Effect'},
+        filter_cols = {'effect': 'Functional Effect', 'times_seen': 'Times Seen'},
+        tooltip_cols = {'times_seen': '# Obsv', 'effect': 'Func Eff.'},
         metric = "escape_mean",
         metric_name = "Escape"
     shell:
@@ -50,7 +51,8 @@ rule create_viz_json:
             --joinData {input.functional_score_df} \
             --includedChains "{params.include_chains}" \
             --excludedChains "{params.exclude_chains}" \
-            --filterCols "{params.filter_cols}"
+            --filterCols "{params.filter_cols}" \
+            --tooltipCols "{params.tooltip_cols}"
         """
 
 # Combine JSON files into one
