@@ -6,7 +6,7 @@ import pandas as pd
 from os.path import join 
 
 # Name of the virus in the tests directory
-virus = "hiv"
+virus = "sars2"
 
 # Paths to data directories
 virus_dir = f"tests/{virus}"
@@ -14,12 +14,12 @@ output_dir = f"tests/{virus}/output"
 data_dir = f"tests/{virus}/escape"
 
 # Read in data for each virus
-experiments = pd.read_csv(join(virus_dir, "experiments.csv"))
+experiments = pd.read_csv(join(virus_dir, f"experiments.csv"))
 
 # Target rule
 rule all:
     input:
-        join(output_dir, "example.json")
+        join(output_dir, f"{virus}.json")
 
 # Create JSON files for each experiment
 rule create_viz_json:
@@ -60,7 +60,7 @@ rule combine_jsons:
     input:
         input_files = expand(join(output_dir, "{experiment}.json"), experiment=experiments.selection.unique())
     output:
-        output_file = join(output_dir, "example.json")
+        output_file = join(output_dir, f"{virus}.json")
     run:
         combined_data = {}
         for input_file in input.input_files:
