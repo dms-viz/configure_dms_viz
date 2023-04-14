@@ -97,7 +97,7 @@ The main inputs for `configure_dms_viz` include the following example files loca
    - `reference_site`: This must correspond to the `site` or `reference_site` column in your `input csv`.
    - `sequential_site`: This is the sequential order of the reference sites and must be a numeric column.
    - `protein_site`: **Optional**, this column is only necessary if the `reference_site` sites are different from the sites in your PDB strucutre.
-3. [**Join Data**](tests/sars2/muteffects_observed.csv): An example dataframe that you could join with your data, if desired, is provided at `tests/sars2/muteffects_observed.csv`. The CSV is joined to your `input CSV` by the `site`, `wildtype`, and `mutant` columns.
+3. Optional [**Join Data**](tests/sars2/muteffects_observed.csv): An example dataframe that you could join with your data, if desired, is provided at `tests/sars2/muteffects_observed.csv`. The CSV is joined to your input CSV by the `site`, `wildtype`, and `mutant` columns.
 
 Make sure your input data follows the same format as the provided examples to ensure compatibility with the `configure_dms_viz` tool.
 
@@ -107,13 +107,13 @@ The output is a single JSON file per experiment that can be uploaded to [dms-viz
 
 ## Examples
 
-To see a detailed example, look in the provided `Snakefile`. You can run this example pipeline using the following command from within the `configure_dms_viz` directory:
+To see a detailed example, look in the provided [`Snakefile`](./Snakefile). You can run this example pipeline using the following command from within the `configure_dms_viz` directory:
 
 ```bash
 snakemake --cores 1
 ```
 
-The output should be located in the [tests](tests/sars2/) directory in a folder called `output`. You can upload the example output into [`dms-viz`](https://dms-viz.github.io/).
+The output will be located in the [tests](tests/sars2/) directory in a folder called `output`. You can upload the example output into [`dms-viz`](https://dms-viz.github.io/).
 
 ## Troubleshooting
 
