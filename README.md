@@ -100,13 +100,13 @@ The output is a single JSON file per experiment that can be uploaded to [dms-viz
 
 ## Examples
 
-To see an example, run the provided `Snakemake` pipeline using the following command from within the `configure_dms_viz` directory:
+To see a detailed example, look in the provided `Snakefile`. You can run this example pipeline using the following command from within the `configure_dms_viz` directory:
 
 ```bash
 snakemake --cores 1
 ```
 
-The output should be located in the [tests](tests/sars2/) directory in a folder called `output`.
+The output should be located in the [tests](tests/sars2/) directory in a folder called `output`. You can upload the example output into [`dms-viz`](https://dms-viz.github.io/).
 
 ## Troubleshooting
 
