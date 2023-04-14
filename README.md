@@ -9,19 +9,17 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Input Data Format](#input-data-format)
-- [Configuration Options](#configuration-options)
-- [Output Format](#output-format)
+- [Output Data Format](#output-data-format)
 - [Examples](#examples)
 - [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
 
 ## Introduction
 
-`configure_dms_viz` is a command-line tool designed to create a JSON file for the web-based visualization tool [dms-viz](https://dms-viz.github.io/). `dms-viz` allows users to visualize site-level mutation data in the context of a 3D protein structure. With `configure_dms_viz`, users can generate a compatible JSON file that can be uploaded to the `dms-viz` website for interactive analysis of their protein mutation data.
+`configure_dms_viz` is a command-line tool designed to create a JSON file for the web-based visualization tool [`dms-viz`](https://dms-viz.github.io/). You can use [`dms-viz`](https://dms-viz.github.io/) to visualize site-level mutation data in the context of a 3D protein structure. With `configure_dms_viz`, users can generate a compatible JSON file that can be uploaded to the [`dms-viz`](https://dms-viz.github.io/) website for interactive analysis of their protein mutation data.
 
 ## Prerequisites
 
-Before using `configure_dms_viz`, ensure that you meet the following requirements:
+Before using `configure_dms_viz`, ensure that you have the following software installed:
 
 - Python version 3.10.5 or higher
 - Snakemake
@@ -37,7 +35,7 @@ conda activate dms_viz_env
 conda install -c conda-forge snakemake pandas
 ```
 
-These commands will create a new conda environment called dms_viz_env with Python 3.10.5 and install the snakemake and pandas packages from the conda-forge chann
+These commands will create a new conda environment called `dms_viz_env` with all the requirements need to use this tool.
 
 ## Installation
 
@@ -52,10 +50,10 @@ In the future, we plan to make this tool available as a package that can be inst
 
 ## Usage
 
-To use `configure_dms_viz`, execute the `create-viz-json.py` script with the required and optional arguments as needed:
+To use `configure_dms_viz`, execute the `configure-dms-viz.py` script with the required and optional arguments as needed:
 
 ```bash
-python create-viz-json.py \
+python configure-dms-viz.py \
     --input <input_csv> \
     --name <experiment_name> \
     --sitemap <sitemap_csv> \
@@ -66,25 +64,25 @@ python create-viz-json.py \
 
 ### Arguments
 
-_Required arguments_
+**Required arguments**
 
-- --input <input_csv>: Path to a CSV file with site- and mutation-level data to visualize on a protein structure.
-- --name <experiment_name>: Name of the experiment/selection for the tool.
-- --sitemap <sitemap_csv>: Path to a CSV file containing a map between reference sites in the experiment and sequential sites.
-- --metric <metric_column>: Name of the column that contains the value to visualize on the protein structure.
-- --output <output_json>: Path to save the \*.json file containing the data for the visualization tool.
+- `--input` <input_csv>: Path to a CSV file with site- and mutation-level data to visualize on a protein structure.
+- `--name` <experiment_name>: Name of the experiment/selection for the tool.
+- `--sitemap` <sitemap_csv>: Path to a CSV file containing a map between reference sites in the experiment and sequential sites.
+- `--metric` <metric_column>: Name of the column that contains the value to visualize on the protein structure.
+- `--output` <output_json>: Path to save the \*.json file containing the data for the visualization tool.
 
-_Optional configuration arguments_
+**Optional configuration arguments**
 
-- --structure <pdb_id>: An RSCB PDB ID if using a structure that can be fetched directly from the PDB.
-- --metricName <metric_name>: The name that should show up for your metric in the plot.
-- --joinData <join_data_csv>: A CSV file with functional scores to join to the visualization data. Column with the scores should be called 'effect'.
-- --tooltipCols <column_names>: A list of column names to use as filters in the visualization.
-- --filterCols <column_names>: A list of column names to use as filters in the visualization.
-- --includedChains <chain_names>: If not mapping data to every chain, a space-separated list of chain names (i.e., 'C F M G J P').
-- --excludedChains <chain_names>: A space-separated string of chains that should not be shown on the protein structure (i.e., 'B L R').
-- --alphabet <mutation_string>: A string with no spaces containing all the mutations in your experiment and their desired order.
-- --colors <color_list>: A list of colors for representing different epitopes.
+- `--structure` <pdb_id>: An RSCB PDB ID if using a structure that can be fetched directly from the PDB.
+- `--metricName` <metric_name>: The name that should show up for your metric in the plot.
+- `--joinData` <join_data_csv>: A CSV file with functional scores to join to the visualization data. Column with the scores should be called 'effect'.
+- `--tooltipCols` <column_names>: A list of column names to use as filters in the visualization.
+- `--filterCols` <column_names>: A list of column names to use as filters in the visualization.
+- `--includedChains` <chain_names>: If not mapping data to every chain, a space-separated list of chain names (i.e., 'C F M G J P').
+- `--excludedChains` <chain_names>: A space-separated string of chains that should not be shown on the protein structure (i.e., 'B L R').
+- `--alphabet` <mutation_string>: A string with no spaces containing all the mutations in your experiment and their desired order.
+- `--colors` <color_list>: A list of colors for representing different epitopes.
 
 ## Input Data Format
 
