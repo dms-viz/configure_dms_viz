@@ -46,13 +46,13 @@ rule create_viz_json:
             --sitemap {input.sitemap_df} \
             --metric {params.metric} \
             --structure {params.structure} \
-            --metricName {params.metric_name} \
+            --metric-name {params.metric_name} \
             --output {output} \
-            --joinData {input.functional_score_df} \
-            --includedChains "{params.include_chains}" \
-            --excludedChains "{params.exclude_chains}" \
-            --filterCols "{params.filter_cols}" \
-            --tooltipCols "{params.tooltip_cols}"
+            --join-data {input.functional_score_df} \
+            --included-chains "{params.include_chains}" \
+            --excluded-chains "{params.exclude_chains}" \
+            --filter-cols "{params.filter_cols}" \
+            --tooltip-cols "{params.tooltip_cols}"
         """
 
 # Combine JSON files into one

@@ -415,7 +415,10 @@ class ListParamType(click.ParamType):
 
     def convert(self, value, param, ctx):
         try:
-            return list(map(str, value.split(",")))
+            if isinstance(value, list):
+                return value
+            elif isinstance(value, str):
+                return list(map(str, value.split(",")))
         except ValueError:
             self.fail(f"{value} is not a valid list", param, ctx)
 
@@ -469,46 +472,46 @@ class DictParamType(click.ParamType):
     help="Path to save the *.json file containing the data for the visualization tool.",
 )
 @click.option(
-    "--metricName",
+    "--metric-name",
     type=str,
     required=False,
     default=None,
     help="Optionally, the name that should show up for your metric in the plot.",
 )
 @click.option(
-    "--filterCols",
+    "--filter-cols",
     type=DictParamType(),
     required=False,
     default=None,
-    help="Optionally, a space separated list of columns to use as filters in the visualization. Example: {'effect': 'Functional Effect', 'times_seen': 'Times Seen'}",
+    help="Optionally, a space separated list of columns to use as filters in the visualization. Example: \"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}\"",
 )
 @click.option(
-    "--tooltipCols",
+    "--tooltip-cols",
     type=DictParamType(),
     required=False,
     default=None,
-    help="Optionally, a space separated list of columns to use as tooltips in the visualization. Example: {'times_seen': '# Obsv', 'effect': 'Func Eff.'}",
+    help="Optionally, a space separated list of columns to use as tooltips in the visualization. Example: \"{'times_seen': '# Obsv', 'effect': 'Func Eff.'}\"",
 )
 @click.option(
-    "--joinData",
+    "--join-data",
     type=ListParamType(),
     required=False,
     default=None,
-    help="Optionally, a csv file with additional data to join to the mutation data. Example: 'path/to/join_data.csv, path/to/join_data2.csv'",
+    help='Optionally, a csv file with additional data to join to the mutation data. Example: "path/to/join_data.csv, path/to/join_data2.csv"',
 )
 @click.option(
-    "--includedChains",
+    "--included-chains",
     type=str,
     required=False,
     default="polymer",
-    help="Optionally, a space separated list of chains to include in the visualization. Example: 'A B C'",
+    help='Optionally, a space separated list of chains to include in the visualization. Example: "A B C"',
 )
 @click.option(
-    "--excludedChains",
+    "--excluded-chains",
     type=str,
     required=False,
     default="none",
-    help="A space separated list of chains to exclude from the visualization. Example: 'A B C'",
+    help='A space separated list of chains to exclude from the visualization. Example: "A B C"',
 )
 @click.option(
     "--alphabet",
@@ -522,7 +525,7 @@ class DictParamType(click.ParamType):
     type=ListParamType(),
     required=False,
     default=["#0072B2", "#CC79A7", "#4C3549", "#009E73"],
-    help="A list of colors to use for the epitopes in the visualization. Example: '#0072B2,#CC79A7,#4C3549,#009E73'",
+    help='A list of colors to use for the epitopes in the visualization. Example: "#0072B2, #CC79A7, #4C3549, #009E73"',
 )
 def cli(
     input,
@@ -531,12 +534,12 @@ def cli(
     structure,
     name,
     output,
-    metricName,
-    filterCols,
-    tooltipCols,
-    joinData,
-    includedChains,
-    excludedChains,
+    metric_name,
+    filter_cols,
+    tooltip_cols,
+    join_data,
+    included_chains,
+    excluded_chains,
     alphabet,
     colors,
 ):
@@ -549,12 +552,12 @@ def cli(
         structure (str): An RCSB PDB ID (i.e. 6UDJ) or the path to a file with a *.pdb extension.
         name (str): The name of the experiment. This will be used when concatenating multiple experiments.
         output (str): Path to save the *.json file containing the data for the visualization tool.
-        metricName (str, optional): Optionally, the name that should show up for your metric in the plot. Defaults to None.
-        filterCols (dict, optional): Optionally, a space separated list of columns to use as filters in the visualization. Defaults to None.
-        tooltipCols (dict, optional): Optionally, a space separated list of columns to use as tooltips in the visualization. Defaults to None.
-        joinData (list, optional): Optionally, a csv file with additional data to join to the mutation data. Defaults to None.
-        includedChains (str, optional): Optionally, a space separated list of chains to include in the visualization. Defaults to "polymer".
-        excludedChains (str, optional): A space separated list of chains to exclude from the visualization. Defaults to "none".
+        metric_name (str, optional): Optionally, the name that should show up for your metric in the plot. Defaults to None.
+        filter_cols (dict, optional): Optionally, a space separated list of columns to use as filters in the visualization. Defaults to None.
+        tooltip_cols (dict, optional): Optionally, a space separated list of columns to use as tooltips in the visualization. Defaults to None.
+        join_data (list, optional): Optionally, a csv file with additional data to join to the mutation data. Defaults to None.
+        included_chains (str, optional): Optionally, a space separated list of chains to include in the visualization. Defaults to "polymer".
+        excluded_chains (str, optional): A space separated list of chains to exclude from the visualization. Defaults to "none".
         alphabet (str, optional): A string of amino acids to use as the alphabet for the visualization. The order is the order in which the amino acids will be displayed on the heatmap. Defaults to "RKHDEQNSTYWFAILMVGPC-*".
         colors (list, optional): A list of colors to use for the epitopes in the visualization. Defaults to ["#0072B2", "#CC79A7", "#4C3549", "#009E73"].
     """
@@ -563,8 +566,8 @@ def cli(
     mut_metric_df = pd.read_csv(input)
 
     # Split the list of join data files and read them in as a list
-    if joinData:
-        join_data_dfs = [pd.read_csv(file) for file in joinData]
+    if join_data:
+        join_data_dfs = [pd.read_csv(file) for file in join_data]
     # Read in the sitemap data
     sitemap_df = pd.read_csv(sitemap)
 
@@ -575,11 +578,11 @@ def cli(
         sitemap_df,
         structure,
         join_data_dfs,
-        filterCols,
-        tooltipCols,
-        metricName,
-        includedChains,
-        excludedChains,
+        filter_cols,
+        tooltip_cols,
+        metric_name,
+        included_chains,
+        excluded_chains,
         alphabet,
         colors,
     )
