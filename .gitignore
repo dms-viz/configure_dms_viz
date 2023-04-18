@@ -1,11 +1,47 @@
-.*
-~*
-*.out
-_*
-!.gitignore
+# General Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc.pytest_cache/
 
-# Ignore the venv directory
+# Snakemake
+.snakemake/
+
+# Virtual environments
+venv/
+*.venv/
 env/
+.env/
+.virtualenv/
+
+# Distribution / packaging
+dist/
+*.egg-info/
+*.egg
+*.wheel
+build/
+
+# Jupyter notebook
+.ipynb_checkpoints/
+
+# Visual Studio Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# pytest
+.tox/
+.pytest_cache/
+
+# Others
+*.log
+*.swp
+*.swo
 
 # Project specific direcotries
 notebooks

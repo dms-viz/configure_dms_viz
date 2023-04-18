@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import os
 import json
 import click
@@ -590,7 +589,3 @@ def cli(
     # Write the dictionary to a json file
     with open(output, "w") as f:
         json.dump({name: experiment_dict}, f)
-
-
-if __name__ == "__main__":
-    cli()

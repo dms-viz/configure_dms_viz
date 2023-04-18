@@ -40,7 +40,7 @@ rule create_viz_json:
         metric_name = "Escape"
     shell:
         """
-        python configure-dms-viz.py \
+        configure-dms-viz \
             --input {input.escape_df} \
             --name {params.name} \
             --sitemap {input.sitemap_df} \
