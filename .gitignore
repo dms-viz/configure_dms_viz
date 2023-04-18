@@ -4,6 +4,9 @@
 _*
 !.gitignore
 
+# Ignore the venv directory
+env/
+
 # Project specific direcotries
 notebooks
 tests/*
