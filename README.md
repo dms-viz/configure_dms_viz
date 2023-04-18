@@ -70,17 +70,17 @@ python configure-dms-viz.py \
 - `--name` <experiment_name>: Name of the experiment/selection for the tool. For example, the antibody name or serum ID. This property is necessary for combining multiple experiments into a single file.
 - `--sitemap` <sitemap_csv>: Path to a CSV file containing a map between reference sites in the experiment and sequential sites. [See details below](#input-data-format) for required columns and format.
 - `--metric` <metric_column>: Name of the column that contains the value to visualize on the protein structure. This tells the tool which column you want to visualize on a protein strucutre.
+- `--structure` <pdb_structure>: Either an RSCB PDB ID if using a structure that can be fetched directly from the PDB (i.e. `"6xr8"`). Or, a path to a locally downloaded PDB file (i.e. `./pdb/my_custom_structure.pdb`).
 - `--output` <output_json>: Path to save the \*.json file containing the data for the visualization tool.
 
 **Optional configuration arguments**
 
-- `--structure` <pdb_structure>: Either an RSCB PDB ID if using a structure that can be fetched directly from the PDB (i.e. `"6xr8"`). Or, a path to a locally downloaded PDB file (i.e. `./pdb/my_custom_structure.pdb`).
-- `--metricName` <metric_name>: The name that should show up for your metric in the plot. This let's you customize the names of your columns in your visualization. For example, if your metric column is called `escape_mean` you can rename it to `Escape` for the visualization.
-- `--joinData` <join_data_csv>: A CSV file with data to join to the visualization data. This data can then be used in the visualization tooltips or filters. [See details below](#input-data-format) for formatting requirements.
-- `--tooltipCols` <column_names>: A dictionary that establishes the columns that you want to show up in the tooltip in the visualization (i.e. `"{'times_seen': '# Obsv', 'effect': 'Func Eff.'}"`).
-- `--filterCols` <column_names>: A dictionary that establishes the columns that you want to use as filters in the visualization (i.e. `"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}"`).
-- `--includedChains` <chain_names>: A space-delimited string of chain names that correspond to the chains in your PDB structure that correspond to the reference sites in your data (i.e., `'C F M G J P'`). This is only necesary if your PDB structure contains chains that you do not have site- and mutation-level measurements for.
-- `--excludedChains` <chain_names>: A space-delimited string of chain names that should not be shown on the protein structure (i.e., `'B L R'`).
+- `--metric-name` <metric_name>: The name that should show up for your metric in the plot. This let's you customize the names of your columns in your visualization. For example, if your metric column is called `escape_mean` you can rename it to `Escape` for the visualization.
+- `--join-data` <join_data_csv>: A CSV file with data to join to the visualization data. This data can then be used in the visualization tooltips or filters. [See details below](#input-data-format) for formatting requirements.
+- `--tooltip-cols` <column_names>: A dictionary that establishes the columns that you want to show up in the tooltip in the visualization (i.e. `"{'times_seen': '# Obsv', 'effect': 'Func Eff.'}"`).
+- `--filter-cols` <column_names>: A dictionary that establishes the columns that you want to use as filters in the visualization (i.e. `"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}"`).
+- `--included-chains` <chain_names>: A space-delimited string of chain names that correspond to the chains in your PDB structure that correspond to the reference sites in your data (i.e., `'C F M G J P'`). This is only necesary if your PDB structure contains chains that you do not have site- and mutation-level measurements for.
+- `--excluded-chains` <chain_names>: A space-delimited string of chain names that should not be shown on the protein structure (i.e., `'B L R'`).
 - `--alphabet` <mutation_string>: A string with no spaces containing all the amino acids in your experiment and their desired order (i.e. `"RKHDEQNSTYWFAILMVGPC-*"`).
 - `--colors` <color_list>: A list of colors for representing different epitopes.
 
