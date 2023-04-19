@@ -32,32 +32,34 @@ Create a new conda environment and install the required packages:
 ```bash
 conda create -n dms_viz_env python=3.10.5
 conda activate dms_viz_env
-conda install -c conda-forge snakemake pandas
+conda install -c conda-forge snakemake pandas pip
 ```
 
 These commands will create a new conda environment called `dms_viz_env` with all the requirements needed to use this tool.
 
 ## Installation
 
-Currently, the best way to use `configure_dms_viz` is by cloning the repository and using the script directly:
+Currently, the best way to use `configure_dms_viz` is by cloning the repository and using pip to initialize the command line tool:
 
 ```bash
 git clone https://github.com/yourusername/configure_dms_viz.git
 cd configure_dms_viz
+pip install -e .
 ```
 
-In the future, we plan to make this tool available as a package that can be installed via pip or conda.
+In the future, we plan to make this tool available as a package that can be installed via pip from PyPI or conda from conda-forge.
 
 ## Usage
 
-To use `configure_dms_viz`, execute the `configure-dms-viz.py` script with the required and optional arguments as needed:
+To use `configure_dms_viz`, execute the `configure-dms-viz` command with the required and optional arguments as needed:
 
 ```bash
-python configure-dms-viz.py \
-    --input <input_csv> \
+configure-dms-viz \
     --name <experiment_name> \
+    --input <input_csv> \
     --sitemap <sitemap_csv> \
     --metric <metric_column> \
+    --structure <pdb_structure> \
     --output <output_json> \
     [optional_arguments]
 ```
@@ -107,7 +109,23 @@ The output is a single JSON file per experiment that can be uploaded to [dms-viz
 
 ## Examples
 
-To see a detailed example, look in the provided [`Snakefile`](./Snakefile). You can run this example pipeline using the following command from within the `configure_dms_viz` directory:
+An example dataset is included within the [`tests`](tests/sars2/) directory of the repo. After installing the tool, you can run the following example:
+
+```bash
+configure-dms-viz \
+   --name LyCoV-1404 \
+   --input tests/sars2/escape/LyCoV-1404_avg.csv \
+   --sitemap tests/sars2/site_numbering_map.csv \
+   --metric escape_mean \
+   --structure 6xr8 \
+   --output LyCoV-1404.json \
+   --metric-name Escape \
+   --join-data tests/sars2/muteffects_observed.csv \
+   --filter-cols "{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}" \
+   --tooltip-cols "{'times_seen': '# Obsv', 'effect': 'Func Eff.'}"
+```
+
+To an example of what this would look like applied over multiple datasets, look in the provided [`Snakefile`](./Snakefile). You can run this example pipeline using the following command from within the `configure_dms_viz` directory:
 
 ```bash
 snakemake --cores 1
