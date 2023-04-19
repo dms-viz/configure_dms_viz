@@ -209,7 +209,7 @@ def join_additional_data(mut_metric_df, join_data):
         if duplicate_columns:
             df = df.drop(duplicate_columns, axis=1)
             click.secho(
-                message=f"Warning: duplicate column names exist between mutation dataframe and join dataframe. Dropping {duplicate_columns}.",
+                message=f"Warning: duplicate column names exist between mutation dataframe and join dataframe. Dropping {duplicate_columns} from join data.",
                 fg="red",
             )
 
@@ -560,6 +560,10 @@ def cli(
         alphabet (str, optional): A string of amino acids to use as the alphabet for the visualization. The order is the order in which the amino acids will be displayed on the heatmap. Defaults to "RKHDEQNSTYWFAILMVGPC-*".
         colors (list, optional): A list of colors to use for the epitopes in the visualization. Defaults to ["#0072B2", "#CC79A7", "#4C3549", "#009E73"].
     """
+    click.secho(
+        message=f"Formatting data for visualization using the '{metric}' column from '{input}'...",
+        fg="green",
+    )
 
     # Read in the main mutation data
     mut_metric_df = pd.read_csv(input)
@@ -567,8 +571,13 @@ def cli(
     # Split the list of join data files and read them in as a list
     if join_data:
         join_data_dfs = [pd.read_csv(file) for file in join_data]
+        click.secho(
+            message=f"Joining data from {len(join_data)} dataframe.", fg="green"
+        )
+
     # Read in the sitemap data
     sitemap_df = pd.read_csv(sitemap)
+    click.secho(message=f"Using sitemap from '{sitemap}'.", fg="green")
 
     # Create the dictionary to save as a json
     experiment_dict = make_experiment_dictionary(
@@ -589,3 +598,7 @@ def cli(
     # Write the dictionary to a json file
     with open(output, "w") as f:
         json.dump({name: experiment_dict}, f)
+
+    click.secho(
+        message=f"Success! The visualization JSON was written to '{output}'", fg="green"
+    )
