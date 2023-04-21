@@ -542,24 +542,7 @@ def cli(
     alphabet,
     colors,
 ):
-    """Command line interface for creating a JSON file for visualizing protein data
-
-    Args:
-        input (str): Path to a csv with site- and mutation-level data to visualize on a protein structure.
-        sitemap (str): Path to a csv with a mapping of sequential sites to reference sites to protein sites.
-        metric (str): The name of the column the contains the metric for visualization.
-        structure (str): An RCSB PDB ID (i.e. 6UDJ) or the path to a file with a *.pdb extension.
-        name (str): The name of the experiment. This will be used when concatenating multiple experiments.
-        output (str): Path to save the *.json file containing the data for the visualization tool.
-        metric_name (str, optional): Optionally, the name that should show up for your metric in the plot. Defaults to None.
-        filter_cols (dict, optional): Optionally, a space separated list of columns to use as filters in the visualization. Defaults to None.
-        tooltip_cols (dict, optional): Optionally, a space separated list of columns to use as tooltips in the visualization. Defaults to None.
-        join_data (list, optional): Optionally, a csv file with additional data to join to the mutation data. Defaults to None.
-        included_chains (str, optional): Optionally, a space separated list of chains to include in the visualization. Defaults to "polymer".
-        excluded_chains (str, optional): A space separated list of chains to exclude from the visualization. Defaults to "none".
-        alphabet (str, optional): A string of amino acids to use as the alphabet for the visualization. The order is the order in which the amino acids will be displayed on the heatmap. Defaults to "RKHDEQNSTYWFAILMVGPC-*".
-        colors (list, optional): A list of colors to use for the epitopes in the visualization. Defaults to ["#0072B2", "#CC79A7", "#4C3549", "#009E73"].
-    """
+    """Command line interface for creating a JSON file for visualizing protein data"""
     click.secho(
         message=f"Formatting data for visualization using the '{metric}' column from '{input}'...",
         fg="green",
