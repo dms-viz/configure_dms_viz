@@ -557,6 +557,8 @@ def cli(
         click.secho(
             message=f"Joining data from {len(join_data)} dataframe.", fg="green"
         )
+    else:
+        join_data_dfs = None
 
     # Read in the sitemap data
     sitemap_df = pd.read_csv(sitemap)
