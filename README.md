@@ -21,7 +21,7 @@
 
 Before using `configure_dms_viz`, ensure that you have the following software installed:
 
-- Python version 3.10.5 or higher
+- Python version 3.10 or higher
 - Pandas
 - Snakemake
 
@@ -30,12 +30,23 @@ We recommend using the `conda` package manager to set up a virtual environment a
 Create a new conda environment and install the required packages:
 
 ```bash
-conda create -n dms_viz_env python=3.10.5
-conda activate dms_viz_env
-conda install -c conda-forge snakemake pandas pip
+conda create -n dms-viz python=3.10 snakemake pip -c conda-forge
+conda activate dms-viz
 ```
 
-These commands will create a new conda environment called `dms_viz_env` with all the requirements needed to use this tool.
+These commands will create a new conda environment called `dms-viz` with all the requirements needed to use this tool. Be sure that the `pip` command is referencing the correct `pip`. To do this, run the following command:
+
+```bash
+which pip
+```
+
+You should see an output like this:
+
+```bash
+/path/to/your/miniconda3/envs/dms-viz/bin/pip
+```
+
+Where the `pip` command is referencing the installation of pip in your new conda environment.
 
 ## Installation
 
