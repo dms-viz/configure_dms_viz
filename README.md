@@ -106,7 +106,7 @@ The main inputs for `configure_dms_viz` include the following example files loca
    - `wildtype`: The wildtype amino acid at a given reference site
    - `mutant`: The mutant amino acid for a given measurement
    - `epitope`: If there are multiple measurements for the same site (i.e. multiple epitopes), a unique string deliniating these
-2. A [**Sitemap**](tests/sars2/site_numbering_map): An example sitemap, which is a CSV file containing a map between reference sites on the protein and their sequential order, can be found at `tests/sars2/site_numbering_map`.
+2. A [**Sitemap**](tests/sars2/site_numbering_map.csv): An example sitemap, which is a CSV file containing a map between reference sites on the protein and their sequential order, can be found at `tests/sars2/site_numbering_map`.
    - `reference_site`: This must correspond to the `site` or `reference_site` column in your `input csv`.
    - `sequential_site`: This is the sequential order of the reference sites and must be a numeric column.
    - `protein_site`: **Optional**, this column is only necessary if the `reference_site` sites are different from the sites in your PDB strucutre.
