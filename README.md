@@ -30,7 +30,7 @@ We recommend using the `conda` package manager to set up a virtual environment a
 Create a new conda environment and install the required packages:
 
 ```bash
-conda create -n dms-viz python=3.10 snakemake pip -c conda-forge
+conda create -n dms-viz python=3.10 snakemake pip -c conda-forge -c bioconda
 conda activate dms-viz
 ```
 
