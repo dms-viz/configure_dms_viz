@@ -6,7 +6,7 @@ from pandas.api.types import is_numeric_dtype
 
 
 # Check that the mutation data is in the correct format
-def format_mutation_data(mut_metric_df, metric_col, alphabet):
+def format_mutation_data(mut_metric_df, metric_col, condition_col, alphabet):
     """Check that the mutation data is in the correct format.
 
     This data should be a pandas.DataFrame with the following columns:
@@ -14,7 +14,7 @@ def format_mutation_data(mut_metric_df, metric_col, alphabet):
     - wildtype: The wildtype amino acid at the site
     - mutant: The mutant amino acid at the site
     - metric_col: The metric to visualize
-    - epitope: The epitope the mutation is in
+    - condition_col: The condition to group on if there are multiple measurements per mutation
 
     Parameters
     ----------
@@ -22,6 +22,8 @@ def format_mutation_data(mut_metric_df, metric_col, alphabet):
         A dataframe containig site- and mutation-level data for visualization.
     metric_col: str
         The name of the column the contains the metric for visualization.
+    condition_col: str
+        The name of the column the contains the condition if there are multiple measurements per mutation
     alphabet: list
         A list of the amino acid names correspoinding to the mutagenized residues.
 
@@ -46,7 +48,7 @@ def format_mutation_data(mut_metric_df, metric_col, alphabet):
         "wildtype",
         "mutant",
         metric_col,
-        "epitope",
+        condition_col,
     } - set(mut_metric_df.columns)
     if missing_mutation_columns:
         raise ValueError(
@@ -159,7 +161,7 @@ def join_additional_data(mut_metric_df, join_data):
     - mutant: The mutant amino acid at the site
 
     *Note that there currently this data should apply to all site and should
-    be identical between epitopes or conditions. Otherwise, there will be an
+    be identical between conditions. Otherwise, there will be an
     errror about duplicate data.*
 
     Parameters
@@ -296,12 +298,14 @@ def check_tooltip_columns(mut_metric_df, tooltip_cols):
 def make_experiment_dictionary(
     mut_metric_df,
     metric_col,
+    condition_col,
     sitemap_df,
     structure,
     join_data=None,
     filter_cols=None,
     tooltip_cols=None,
     metric_name=None,
+    condition_name=None,
     included_chains="polymer",
     excluded_chains="none",
     alphabet="RKHDEQNSTYWFAILMVGPC-*",
@@ -316,6 +320,8 @@ def make_experiment_dictionary(
         A dataframe containig site- and mutation-level data for visualization.
     metric_col: str
         The name of the column the contains the metric for visualization.
+    condition_col: str
+        The name of the column the contains the condition if there are multiple measurements per mutation.
     sitemap_df: pandas.DataFrame
         A dataframe mapping sequential sites to reference sites to protein sites.
     structure: str
@@ -323,7 +329,7 @@ def make_experiment_dictionary(
     metric_name: str or None
         Rename the metric column to this name if desired. This name shows up in the plot.
     join_data: list or None
-        A list of pandas.dataFrames to join to the main dataframe by mutation/epitope.
+        A list of pandas.dataFrames to join to the main dataframe by mutation/condition.
     filter_cols: dict or None
         A dictionary of column names and formatted names to designate as filters.
     tooltip_cols: dict or None
@@ -335,7 +341,7 @@ def make_experiment_dictionary(
     alphabet: str
         The amino acid labels in the order the should be displayed on the heatmap.
     colors: list
-        A list of colors that will be used for each epitope in the experiment.
+        A list of colors that will be used for each condition in the experiment.
 
     Returns
     -------
@@ -344,13 +350,15 @@ def make_experiment_dictionary(
     """
 
     # Check that the necessary columns are present in the mut_metric dataframe and format
-    mut_metric_df = format_mutation_data(mut_metric_df, metric_col, alphabet)
+    mut_metric_df = format_mutation_data(
+        mut_metric_df, metric_col, condition_col, alphabet
+    )
 
     # Check that the necessary columns are present in the sitemap dataframe and format
     sitemap_df = format_sitemap_data(sitemap_df, mut_metric_df, included_chains)
 
     # Keep track of the required columns to cut down on the final total data size
-    cols_to_keep = ["reference_site", "wildtype", "mutant", metric_col, "epitope"]
+    cols_to_keep = ["reference_site", "wildtype", "mutant", metric_col, condition_col]
 
     # Join the additional data to the main dataframe if there is any
     if join_data:
@@ -377,30 +385,36 @@ def make_experiment_dictionary(
     else:
         pdb = structure
 
-    # Get a list of the epitopes and map these to the colors
-    epitopes = list(set(mut_metric_df.epitope))
-    if len(epitopes) > len(colors):
+    # Get a list of the conditions and map these to the colors
+    conditions = list(set(mut_metric_df[condition_col]))
+    if len(conditions) > len(colors):
         raise ValueError(
-            f"There are {len(epitopes)} epitopes, but only {len(colors)} color(s) specified. Please specify more colors."
+            f"There are {len(conditions)} conditions, but only {len(colors)} color(s) specified. Please specify more colors."
         )
-    epitope_colors = {epitope: colors[i] for i, epitope in enumerate(epitopes)}
+    condition_colors = {condition: colors[i] for i, condition in enumerate(conditions)}
 
     # Rename the metric column to the metric name
     if metric_name:
         mut_metric_df = mut_metric_df.rename(columns={metric_col: metric_name})
         metric_col = metric_name
 
+    # Rename the condition column to the condition name
+    if condition_name:
+        mut_metric_df = mut_metric_df.rename(columns={condition_col: condition_name})
+        condition_col = condition_name
+
     # Make a dictionary holding the experiment data
     experiment_dict = {
         "mut_metric_df": json.loads(mut_metric_df.to_json(orient="records")),
         "metric_col": metric_col,
+        "condition_col": condition_col,
         "sitemap": sitemap_df.set_index("reference_site").to_dict(orient="index"),
         "alphabet": [aa for aa in alphabet],
         "pdb": pdb,
         "dataChains": included_chains.split(" "),
         "excludeChains": excluded_chains.split(" "),
-        "epitopes": epitopes,
-        "epitope_colors": epitope_colors,
+        "conditions": conditions,
+        "condition_colors": condition_colors,
         "filter_cols": filter_cols,
         "tooltip_cols": tooltip_cols,
     }
@@ -450,7 +464,13 @@ class DictParamType(click.ParamType):
     "--metric",
     type=str,
     required=True,
-    help="The name of the column the contains the metric for visualization.",
+    help="The name of the column that contains the metric for visualization.",
+)
+@click.option(
+    "--condition",
+    type=str,
+    required=True,
+    help="The name of the column that contains the condition to group on if there are multiple measurements per experiment.",
 )
 @click.option(
     "--structure",
@@ -476,6 +496,13 @@ class DictParamType(click.ParamType):
     required=False,
     default=None,
     help="Optionally, the name that should show up for your metric in the plot.",
+)
+@click.option(
+    "--condition-name",
+    type=str,
+    required=False,
+    default=None,
+    help="Optionally, the name that should show up for your condition column in the plot.",
 )
 @click.option(
     "--filter-cols",
@@ -524,16 +551,18 @@ class DictParamType(click.ParamType):
     type=ListParamType(),
     required=False,
     default=["#0072B2", "#CC79A7", "#4C3549", "#009E73"],
-    help='A list of colors to use for the epitopes in the visualization. Example: "#0072B2, #CC79A7, #4C3549, #009E73"',
+    help='A list of colors to use for the conditions in the visualization. Example: "#0072B2, #CC79A7, #4C3549, #009E73"',
 )
 def cli(
     input,
     sitemap,
     metric,
+    condition,
     structure,
     name,
     output,
     metric_name,
+    condition_name,
     filter_cols,
     tooltip_cols,
     join_data,
@@ -568,12 +597,14 @@ def cli(
     experiment_dict = make_experiment_dictionary(
         mut_metric_df,
         metric,
+        condition,
         sitemap_df,
         structure,
         join_data_dfs,
         filter_cols,
         tooltip_cols,
         metric_name,
+        condition_name,
         included_chains,
         excluded_chains,
         alphabet,
