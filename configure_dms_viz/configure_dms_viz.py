@@ -43,13 +43,15 @@ def format_mutation_data(mut_metric_df, metric_col, condition_col, alphabet):
             )
 
     # Check that the rest of the necessary columns are present in the mut_metric dataframe
-    missing_mutation_columns = {
+    required_columns = {
         "reference_site",
         "wildtype",
         "mutant",
         metric_col,
-        condition_col,
-    } - set(mut_metric_df.columns)
+    }
+    if condition_col is not None:
+        required_columns.add(condition_col)
+    missing_mutation_columns = required_columns - set(mut_metric_df.columns)
     if missing_mutation_columns:
         raise ValueError(
             f"The following columns do not exist in the mutation dataframe: {list(missing_mutation_columns)}"
@@ -298,13 +300,13 @@ def check_tooltip_columns(mut_metric_df, tooltip_cols):
 def make_experiment_dictionary(
     mut_metric_df,
     metric_col,
-    condition_col,
     sitemap_df,
     structure,
     join_data=None,
     filter_cols=None,
     tooltip_cols=None,
     metric_name=None,
+    condition_col=None,
     condition_name=None,
     included_chains="polymer",
     excluded_chains="none",
@@ -320,14 +322,16 @@ def make_experiment_dictionary(
         A dataframe containig site- and mutation-level data for visualization.
     metric_col: str
         The name of the column the contains the metric for visualization.
-    condition_col: str
-        The name of the column the contains the condition if there are multiple measurements per mutation.
     sitemap_df: pandas.DataFrame
         A dataframe mapping sequential sites to reference sites to protein sites.
     structure: str
         An RCSB PDB ID (i.e. 6UDJ) or the path to a file with a *.pdb extension.
     metric_name: str or None
         Rename the metric column to this name if desired. This name shows up in the plot.
+    condition_col: str or None
+        The name of the column the contains the condition if there are multiple measurements per mutation.
+    condition_name: str or None
+        Rename or format the condition column if desired.
     join_data: list or None
         A list of pandas.dataFrames to join to the main dataframe by mutation/condition.
     filter_cols: dict or None
@@ -358,11 +362,15 @@ def make_experiment_dictionary(
     sitemap_df = format_sitemap_data(sitemap_df, mut_metric_df, included_chains)
 
     # Keep track of the required columns to cut down on the final total data size
-    cols_to_keep = ["reference_site", "wildtype", "mutant", metric_col, condition_col]
+    cols_to_keep = ["reference_site", "wildtype", "mutant", metric_col]
 
     # Join the additional data to the main dataframe if there is any
     if join_data:
         mut_metric_df = join_additional_data(mut_metric_df, join_data)
+
+    # Add the condition column to the required columns if it's not None
+    if condition_col:
+        cols_to_keep.append(condition_col)
 
     # Add the filter columns to the required columns
     if filter_cols:
@@ -386,12 +394,18 @@ def make_experiment_dictionary(
         pdb = structure
 
     # Get a list of the conditions and map these to the colors
-    conditions = list(set(mut_metric_df[condition_col]))
-    if len(conditions) > len(colors):
-        raise ValueError(
-            f"There are {len(conditions)} conditions, but only {len(colors)} color(s) specified. Please specify more colors."
-        )
-    condition_colors = {condition: colors[i] for i, condition in enumerate(conditions)}
+    if condition_col:
+        conditions = list(set(mut_metric_df[condition_col]))
+        if len(conditions) > len(colors):
+            raise ValueError(
+                f"There are {len(conditions)} conditions, but only {len(colors)} color(s) specified. Please specify more colors."
+            )
+        condition_colors = {
+            condition: colors[i] for i, condition in enumerate(conditions)
+        }
+    else:
+        conditions = []
+        condition_colors = {"default": colors[0]}
 
     # Rename the metric column to the metric name
     if metric_name:
@@ -406,15 +420,15 @@ def make_experiment_dictionary(
     # Make a dictionary holding the experiment data
     experiment_dict = {
         "mut_metric_df": json.loads(mut_metric_df.to_json(orient="records")),
+        "sitemap": sitemap_df.set_index("reference_site").to_dict(orient="index"),
         "metric_col": metric_col,
         "condition_col": condition_col,
-        "sitemap": sitemap_df.set_index("reference_site").to_dict(orient="index"),
+        "conditions": conditions,
+        "condition_colors": condition_colors,
         "alphabet": [aa for aa in alphabet],
         "pdb": pdb,
         "dataChains": included_chains.split(" "),
         "excludeChains": excluded_chains.split(" "),
-        "conditions": conditions,
-        "condition_colors": condition_colors,
         "filter_cols": filter_cols,
         "tooltip_cols": tooltip_cols,
     }
@@ -467,12 +481,6 @@ class DictParamType(click.ParamType):
     help="The name of the column that contains the metric for visualization.",
 )
 @click.option(
-    "--condition",
-    type=str,
-    required=True,
-    help="The name of the column that contains the condition to group on if there are multiple measurements per experiment.",
-)
-@click.option(
     "--structure",
     type=str,
     required=True,
@@ -496,6 +504,13 @@ class DictParamType(click.ParamType):
     required=False,
     default=None,
     help="Optionally, the name that should show up for your metric in the plot.",
+)
+@click.option(
+    "--condition",
+    type=str,
+    required=False,
+    default=None,
+    help="The name of the column that contains the condition to group on if there are multiple measurements per experiment.",
 )
 @click.option(
     "--condition-name",
@@ -597,13 +612,13 @@ def cli(
     experiment_dict = make_experiment_dictionary(
         mut_metric_df,
         metric,
-        condition,
         sitemap_df,
         structure,
         join_data_dfs,
         filter_cols,
         tooltip_cols,
         metric_name,
+        condition,
         condition_name,
         included_chains,
         excluded_chains,

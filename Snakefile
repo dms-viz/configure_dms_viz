@@ -47,6 +47,7 @@ rule create_viz_json:
         metric="escape_mean",
         metric_name="Escape",
         condition="epitope",
+        condition_name="Epitope",
     shell:
         """ 
         configure-dms-viz \
@@ -54,7 +55,6 @@ rule create_viz_json:
             --name {params.name} \
             --sitemap {input.sitemap_df} \
             --metric {params.metric} \
-            --condition {params.condition} \
             --structure {params.structure} \
             --metric-name {params.metric_name} \
             --output {output} \
