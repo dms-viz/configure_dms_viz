@@ -88,7 +88,9 @@ configure-dms-viz \
 
 **Optional configuration arguments**
 
-- `--metric-name` <metric_name>: The name that should show up for your metric in the plot. This let's you customize the names of your columns in your visualization. For example, if your metric column is called `escape_mean` you can rename it to `Escape` for the visualization.
+- `--condition` <condition_column>: If there are multiple measurements per mutation, the name of the column that contains that condition distinguishing these measurements.
+- `--metric-name` <metric_name>: The name that will show up for your metric in the plot. This let's you customize the names of your columns in your visualization. For example, if your metric column is called `escape_mean` you can rename it to `Escape` for the visualization.
+- `--conditon_name` <condition_name>: The name that will show up for your condition column in the title of the plot legend. For example, if your condition column is 'epitope', you might rename it to be capilized as 'Epitope' in the legend title.
 - `--join-data` <join_data_csv>: A CSV file with data to join to the visualization data. This data can then be used in the visualization tooltips or filters. [See details below](#input-data-format) for formatting requirements.
 - `--tooltip-cols` <column_names>: A dictionary that establishes the columns that you want to show up in the tooltip in the visualization (i.e. `"{'times_seen': '# Obsv', 'effect': 'Func Eff.'}"`).
 - `--filter-cols` <column_names>: A dictionary that establishes the columns that you want to use as filters in the visualization (i.e. `"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}"`).
@@ -102,10 +104,10 @@ configure-dms-viz \
 The main inputs for `configure_dms_viz` include the following example files located in the [tests directory](tests/sars2/):
 
 1. An [**input CSV**](tests/sars2/escape/): Example CSV files containing site- and mutation-level data to visualize on a protein structure can be found in the `tests/sars2/escape` directory. The CSV must contain the following columns in addition to the specified _`metric_column`_:
-   - `site` or `reference_site`: These will be the sites that show up on the x-axis of the visualization
-   - `wildtype`: The wildtype amino acid at a given reference site
-   - `mutant`: The mutant amino acid for a given measurement
-   - `epitope`: If there are multiple measurements for the same site (i.e. multiple epitopes), a unique string deliniating these
+   - `site` or `reference_site`: These will be the sites that show up on the x-axis of the visualization.
+   - `wildtype`: The wildtype amino acid at a given reference site.
+   - `mutant`: The mutant amino acid for a given measurement.
+   - `condition`: _Optionally_, if there are multiple measurements for the same site (i.e. multiple epitopes), a unique string deliniating these measurements.
 2. A [**Sitemap**](tests/sars2/site_numbering_map.csv): An example sitemap, which is a CSV file containing a map between reference sites on the protein and their sequential order, can be found at `tests/sars2/site_numbering_map`.
    - `reference_site`: This must correspond to the `site` or `reference_site` column in your `input csv`.
    - `sequential_site`: This is the sequential order of the reference sites and must be a numeric column.
