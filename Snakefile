@@ -58,6 +58,8 @@ rule create_viz_json:
             --structure {params.structure} \
             --metric-name {params.metric_name} \
             --output {output} \
+            --condition {params.condition} \
+            --condition-name {params.condition_name} \
             --join-data {input.functional_score_df} \
             --included-chains "{params.include_chains}" \
             --excluded-chains "{params.exclude_chains}" \

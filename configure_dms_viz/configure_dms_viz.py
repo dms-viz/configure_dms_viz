@@ -67,6 +67,13 @@ def format_mutation_data(mut_metric_df, metric_col, condition_col, alphabet):
             f"Some of the wildtype or mutant amino acid names are not in the provided alphabet, i.e., {missing_amino_acids}"
         )
 
+    # Check that there is only one measurement per mutation if there isn't a condition column
+    if condition_col is None:
+        if mut_metric_df[["reference_site", "wildtype", "mutant"]].duplicated().any():
+            raise ValueError(
+                "Duplicates measurements per mutation were found in the mutation dataframe, please specify a condition column."
+            )
+
     return mut_metric_df
 
 
