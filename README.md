@@ -98,6 +98,7 @@ configure-dms-viz \
 - `--excluded-chains` <chain_names>: A space-delimited string of chain names that should not be shown on the protein structure (i.e., `'B L R'`).
 - `--alphabet` <mutation_string>: A string with no spaces containing all the amino acids in your experiment and their desired order (i.e. `"RKHDEQNSTYWFAILMVGPC-*"`).
 - `--colors` <color_list>: A list of colors for representing different epitopes.
+- `--check-pdb` <bool>: Whether to perform checks on the provided pdb structure including checking if the 'included chains' are present, what % of data sites are missing, and what % of wildtype residues in the data match at corresponding sites in the structure.
 
 ## Input Data Format
 
