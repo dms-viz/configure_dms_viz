@@ -3,6 +3,7 @@ import json
 import click
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
+from .pdb_utils import get_structure, check_chains, check_wildtype_residues
 
 
 # Check that the mutation data is in the correct format
@@ -134,7 +135,7 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     # If the protein site isn't specified, assume that it's the same as the reference site
     if "protein_site" not in sitemap_df.columns:
         click.secho(
-            message="'protein_site' column is not present in the sitemap. Assuming that the reference sites correspond to protein sites.",
+            message="\n'protein_site' column is not present in the sitemap. Assuming that the reference sites correspond to protein sites.",
             fg="yellow",
         )
         sitemap_df["protein_site"] = sitemap_df["reference_site"].apply(
@@ -155,6 +156,11 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     sitemap_df["chains"] = sitemap_df["protein_site"].apply(
         lambda y: included_chains if str(y).isnumeric() else ""
     )
+
+    # Drop the columns that aren't needed for the visualization
+    sitemap_df = sitemap_df[
+        ["reference_site", "protein_site", "sequential_site", "chains"]
+    ]
 
     return sitemap_df
 
@@ -220,7 +226,7 @@ def join_additional_data(mut_metric_df, join_data):
         if duplicate_columns:
             df = df.drop(duplicate_columns, axis=1)
             click.secho(
-                message=f"Warning: duplicate column names exist between mutation dataframe and join dataframe. Dropping {duplicate_columns} from join data.",
+                message=f"\nWarning: duplicate column names exist between mutation dataframe and join dataframe. Dropping {duplicate_columns} from join data.\n",
                 fg="red",
             )
 
@@ -319,6 +325,7 @@ def make_experiment_dictionary(
     excluded_chains="none",
     alphabet="RKHDEQNSTYWFAILMVGPC-*",
     colors=["#0072B2", "#CC79A7", "#4C3549", "#009E73"],
+    check_pdb=True,
 ):
     """Take site-level and mutation-level measurements and format into
     a dictionary that can be used to create a JSON file for the visualization.
@@ -353,6 +360,8 @@ def make_experiment_dictionary(
         The amino acid labels in the order the should be displayed on the heatmap.
     colors: list
         A list of colors that will be used for each condition in the experiment.
+    check_pdb: bool
+        Check that the chains and wildtype residues are in the structure.
 
     Returns
     -------
@@ -423,6 +432,30 @@ def make_experiment_dictionary(
     if condition_name:
         mut_metric_df = mut_metric_df.rename(columns={condition_col: condition_name})
         condition_col = condition_name
+
+    # Check that the chains and wildtype residues are in the structure
+    if check_pdb:
+        if included_chains != "polymer":
+            check_chains(get_structure(structure), included_chains.split(" "))
+        # Check that the wildtype residues are in the structure
+        perc_matching, perc_missing = check_wildtype_residues(
+            get_structure(structure), mut_metric_df, sitemap_df, excluded_chains
+        )
+        # Alert the user about the missing and matching residues
+        if perc_matching < 0.5:
+            color = "red"
+            message = f"Warning: Fewer than {perc_matching*100:.2F}% of the wildtype residues in the data match the corresponding residues in the structure."
+        else:
+            color = "yellow"
+            message = f"About {perc_matching*100:.2F}% of the wildtype residues in the data match the corresponding residues in the structure."
+        click.secho(message=message, fg=color)
+        if perc_missing >= 0.5:
+            color = "red"
+            message = f"Warning: {perc_missing*100:.2F}% of the data sites are missing from the structure."
+        else:
+            color = "yellow"
+            message = f"About {perc_missing*100:.2F}% of the data sites are missing from the structure."
+        click.secho(message=message, fg=color)
 
     # Make a dictionary holding the experiment data
     experiment_dict = {
@@ -575,6 +608,13 @@ class DictParamType(click.ParamType):
     default=["#0072B2", "#CC79A7", "#4C3549", "#009E73"],
     help='A list of colors to use for the conditions in the visualization. Example: "#0072B2, #CC79A7, #4C3549, #009E73"',
 )
+@click.option(
+    "--check-pdb",
+    type=bool,
+    required=False,
+    default=True,
+    help="Whether to report summary statistics on how wiltype residues and chains line up with the provided structure",
+)
 def cli(
     input,
     sitemap,
@@ -592,10 +632,11 @@ def cli(
     excluded_chains,
     alphabet,
     colors,
+    check_pdb,
 ):
     """Command line interface for creating a JSON file for visualizing protein data"""
     click.secho(
-        message=f"Formatting data for visualization using the '{metric}' column from '{input}'...",
+        message=f"\nFormatting data for visualization using the '{metric}' column from '{input}'...",
         fg="green",
     )
 
@@ -606,14 +647,14 @@ def cli(
     if join_data:
         join_data_dfs = [pd.read_csv(file) for file in join_data]
         click.secho(
-            message=f"Joining data from {len(join_data)} dataframe.", fg="green"
+            message=f"\nJoining data from {len(join_data)} dataframe.", fg="green"
         )
     else:
         join_data_dfs = None
 
     # Read in the sitemap data
     sitemap_df = pd.read_csv(sitemap)
-    click.secho(message=f"Using sitemap from '{sitemap}'.", fg="green")
+    click.secho(message=f"\nUsing sitemap from '{sitemap}'.", fg="green")
 
     # Create the dictionary to save as a json
     experiment_dict = make_experiment_dictionary(
@@ -631,6 +672,7 @@ def cli(
         excluded_chains,
         alphabet,
         colors,
+        check_pdb,
     )
 
     # Write the dictionary to a json file
@@ -638,5 +680,6 @@ def cli(
         json.dump({name: experiment_dict}, f)
 
     click.secho(
-        message=f"Success! The visualization JSON was written to '{output}'", fg="green"
+        message=f"\nSuccess! The visualization JSON was written to '{output}'",
+        fg="green",
     )

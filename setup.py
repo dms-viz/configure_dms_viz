@@ -5,7 +5,7 @@ setup(
     version="0.1.0",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=["click", "pandas"],
+    install_requires=["click", "pandas", "biopython"],
     entry_points={
         "console_scripts": [
             "configure-dms-viz = configure_dms_viz.configure_dms_viz:cli",
