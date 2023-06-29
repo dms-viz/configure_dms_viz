@@ -416,6 +416,12 @@ def make_experiment_dictionary(
             raise ValueError(
                 f"There are {len(conditions)} conditions, but only {len(colors)} color(s) specified. Please specify more colors."
             )
+        for color in colors:
+            # Check that the colors are valid HEX format
+            if not color.startswith("#") or len(color) != 7:
+                raise ValueError(
+                    f"The color '{color}' is not valid. Please use a hex format color code."
+                )
         condition_colors = {
             condition: colors[i] for i, condition in enumerate(conditions)
         }
