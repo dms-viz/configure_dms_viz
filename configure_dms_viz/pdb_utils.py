@@ -173,10 +173,12 @@ def check_wildtype_residues(structure, mut_metric_df, sitemap_df, excluded_chain
         site_not_in_structure = []
         for chain in chains:
             try:
-                if seq1(structure[0][chain][int(site)].resname) == wildtype.upper():
+                residue = structure[0][chain][int(site)]
+                if seq1(residue.resname) == wildtype.upper():
                     matches_wildtype_at_site.append(True)
                 else:
                     matches_wildtype_at_site.append(False)
+                site_not_in_structure.append(False)
             except KeyError:
                 site_not_in_structure.append(True)
         if matches_wildtype_at_site and all(matches_wildtype_at_site):
