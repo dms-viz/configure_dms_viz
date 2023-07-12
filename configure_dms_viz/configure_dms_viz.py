@@ -326,6 +326,7 @@ def make_experiment_dictionary(
     alphabet="RKHDEQNSTYWFAILMVGPC-*",
     colors=["#0072B2", "#CC79A7", "#4C3549", "#009E73"],
     check_pdb=True,
+    exclude_amino_acids=None,
 ):
     """Take site-level and mutation-level measurements and format into
     a dictionary that can be used to create a JSON file for the visualization.
@@ -362,6 +363,8 @@ def make_experiment_dictionary(
         A list of colors that will be used for each condition in the experiment.
     check_pdb: bool
         Check that the chains and wildtype residues are in the structure.
+    exclude_amino_acids: list or None
+        Amino acids that should be excluded from the summary statistics
 
     Returns
     -------
@@ -395,6 +398,16 @@ def make_experiment_dictionary(
     # Add the tooltip columns to required columns
     if tooltip_cols:
         cols_to_keep += check_filter_columns(mut_metric_df, tooltip_cols)
+
+    # If there are excluded amino acids, check that they're in the alphabet
+    if exclude_amino_acids:
+        # Strip out the white space
+        exclude_amino_acids = [aa.strip() for aa in exclude_amino_acids]
+        missing_amino_acids = set(exclude_amino_acids) - set(alphabet)
+        if missing_amino_acids:
+            raise ValueError(
+                f"Some of the excluded amino acids are not in the provided alphabet, i.e., {missing_amino_acids}"
+            )
 
     # Subset the mutation dataframe down to the required columns
     mut_metric_df = mut_metric_df[list(set(cols_to_keep))]
@@ -477,6 +490,7 @@ def make_experiment_dictionary(
         "excludeChains": excluded_chains.split(" "),
         "filter_cols": filter_cols,
         "tooltip_cols": tooltip_cols,
+        "excludedAminoAcids": exclude_amino_acids,
     }
 
     return experiment_dict
@@ -621,6 +635,13 @@ class DictParamType(click.ParamType):
     default=True,
     help="Whether to report summary statistics on how wiltype residues and chains line up with the provided structure",
 )
+@click.option(
+    "--exclude-amino-acids",
+    type=ListParamType(),
+    required=False,
+    default=None,
+    help="Amino acids that should be excluded from the summary statistics",
+)
 def cli(
     input,
     sitemap,
@@ -639,6 +660,7 @@ def cli(
     alphabet,
     colors,
     check_pdb,
+    exclude_amino_acids,
 ):
     """Command line interface for creating a JSON file for visualizing protein data"""
     click.secho(
@@ -679,6 +701,7 @@ def cli(
         alphabet,
         colors,
         check_pdb,
+        exclude_amino_acids,
     )
 
     # Write the dictionary to a json file

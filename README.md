@@ -99,6 +99,7 @@ configure-dms-viz \
 - `--alphabet` <mutation_string>: A string with no spaces containing all the amino acids in your experiment and their desired order (i.e. `"RKHDEQNSTYWFAILMVGPC-*"`).
 - `--colors` <color_list>: A comma separated list of HEX format colors for representing different epitopes, i.e. `"#0072B2, #CC79A7, #4C3549, #009E73"`.
 - `--check-pdb` <bool>: Whether to perform checks on the provided pdb structure including checking if the 'included chains' are present, what % of data sites are missing, and what % of wildtype residues in the data match at corresponding sites in the structure.
+- `--exclude-amino-acids` <amino_acid_list>: A comma separated list of amino acids that shouldn't be used to calculate the summary statistics (i.e. "\*, -")
 
 ## Input Data Format
 

@@ -64,7 +64,7 @@ rule create_viz_json:
             --included-chains "{params.include_chains}" \
             --excluded-chains "{params.exclude_chains}" \
             --filter-cols "{params.filter_cols}" \
-            --tooltip-cols "{params.tooltip_cols}"
+            --tooltip-cols "{params.tooltip_cols}" \
         """
 
 
