@@ -79,27 +79,28 @@ configure-dms-viz \
 
 **Required arguments**
 
-- `--input` <input_csv>: Path to a CSV file with site- and mutation-level data to visualize on a protein structure. [See details below](#input-data-format) for required columns and format.
-- `--name` <experiment_name>: Name of the experiment/selection for the tool. For example, the antibody name or serum ID. This property is necessary for combining multiple experiments into a single file.
-- `--sitemap` <sitemap_csv>: Path to a CSV file containing a map between reference sites in the experiment and sequential sites. [See details below](#input-data-format) for required columns and format.
-- `--metric` <metric_column>: Name of the column that contains the value to visualize on the protein structure. This tells the tool which column you want to visualize on a protein strucutre.
-- `--structure` <pdb_structure>: Either an RSCB PDB ID if using a structure that can be fetched directly from the PDB (i.e. `"6xr8"`). Or, a path to a locally downloaded PDB file (i.e. `./pdb/my_custom_structure.pdb`).
-- `--output` <output_json>: Path to save the \*.json file containing the data for the visualization tool.
+- `--input` <string>: Path to a CSV file with site- and mutation-level data to visualize on a protein structure. [See details below](#input-data-format) for required columns and format.
+- `--name` <string>: Name of the experiment/selection for the tool. For example, the antibody name or serum ID. This property is necessary for combining multiple experiments into a single file.
+- `--sitemap` <string>: Path to a CSV file containing a map between reference sites in the experiment and sequential sites. [See details below](#input-data-format) for required columns and format.
+- `--metric` <string>: Name of the column that contains the value to visualize on the protein structure. This tells the tool which column you want to visualize on a protein strucutre.
+- `--structure` <string>: Either an RSCB PDB ID if using a structure that can be fetched directly from the PDB (i.e. `"6xr8"`). Or, a path to a locally downloaded PDB file (i.e. `./pdb/my_custom_structure.pdb`).
+- `--output` <string>: Path to save the \*.json file containing the data for the visualization tool.
 
 **Optional configuration arguments**
 
-- `--condition` <condition_column>: If there are multiple measurements per mutation, the name of the column that contains that condition distinguishing these measurements.
-- `--metric-name` <metric_name>: The name that will show up for your metric in the plot. This let's you customize the names of your columns in your visualization. For example, if your metric column is called `escape_mean` you can rename it to `Escape` for the visualization.
-- `--conditon_name` <condition_name>: The name that will show up for your condition column in the title of the plot legend. For example, if your condition column is 'epitope', you might rename it to be capilized as 'Epitope' in the legend title.
-- `--join-data` <join_data_csv>: A CSV file with data to join to the visualization data. This data can then be used in the visualization tooltips or filters. [See details below](#input-data-format) for formatting requirements.
-- `--tooltip-cols` <column_names>: A dictionary that establishes the columns that you want to show up in the tooltip in the visualization (i.e. `"{'times_seen': '# Obsv', 'effect': 'Func Eff.'}"`).
-- `--filter-cols` <column_names>: A dictionary that establishes the columns that you want to use as filters in the visualization (i.e. `"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}"`).
-- `--included-chains` <chain_names>: A space-delimited string of chain names that correspond to the chains in your PDB structure that correspond to the reference sites in your data (i.e., `'C F M G J P'`). This is only necesary if your PDB structure contains chains that you do not have site- and mutation-level measurements for.
-- `--excluded-chains` <chain_names>: A space-delimited string of chain names that should not be shown on the protein structure (i.e., `'B L R'`).
-- `--alphabet` <mutation_string>: A string with no spaces containing all the amino acids in your experiment and their desired order (i.e. `"RKHDEQNSTYWFAILMVGPC-*"`).
-- `--colors` <color_list>: A comma separated list of HEX format colors for representing different epitopes, i.e. `"#0072B2, #CC79A7, #4C3549, #009E73"`.
+- `--condition` <string>: If there are multiple measurements per mutation, the name of the column that contains that condition distinguishing these measurements.
+- `--metric-name` <string>: The name that will show up for your metric in the plot. This let's you customize the names of your columns in your visualization. For example, if your metric column is called `escape_mean` you can rename it to `Escape` for the visualization.
+- `--conditon_name` <string>: The name that will show up for your condition column in the title of the plot legend. For example, if your condition column is 'epitope', you might rename it to be capilized as 'Epitope' in the legend title.
+- `--join-data` <list>: A comma separated list of CSV file with data to join to the visualization data. This data can then be used in the visualization tooltips or filters. [See details below](#input-data-format) for formatting requirements.
+- `--tooltip-cols` <dict>: A dictionary that establishes the columns that you want to show up in the tooltip in the visualization (i.e. `"{'times_seen': '# Obsv', 'effect': 'Func Eff.'}"`).
+- `--filter-cols` <dict>: A dictionary that establishes the columns that you want to use as filters in the visualization (i.e. `"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}"`).
+- `--included-chains` <string>: A space-delimited string of chain names that correspond to the chains in your PDB structure that correspond to the reference sites in your data (i.e., `'C F M G J P'`). This is only necesary if your PDB structure contains chains that you do not have site- and mutation-level measurements for.
+- `--excluded-chains` <string>: A space-delimited string of chain names that should not be shown on the protein structure (i.e., `'B L R'`).
+- `--alphabet` <string>: A string with no spaces containing all the amino acids in your experiment and their desired order (i.e. `"RKHDEQNSTYWFAILMVGPC-*"`).
+- `--colors` <list>: A comma separated list of HEX format colors for representing different epitopes, i.e. `"#0072B2, #CC79A7, #4C3549, #009E73"`.
 - `--check-pdb` <bool>: Whether to perform checks on the provided pdb structure including checking if the 'included chains' are present, what % of data sites are missing, and what % of wildtype residues in the data match at corresponding sites in the structure.
-- `--exclude-amino-acids` <amino_acid_list>: A comma separated list of amino acids that shouldn't be used to calculate the summary statistics (i.e. "\*, -")
+- `--exclude-amino-acids` <list>: A comma separated list of amino acids that shouldn't be used to calculate the summary statistics (i.e. "\*, -")
+- `--description` <string>: A short description of the dataset that will show up in the tool if the user clicks a button for more information.
 
 ## Input Data Format
 

@@ -327,6 +327,7 @@ def make_experiment_dictionary(
     colors=["#0072B2", "#CC79A7", "#4C3549", "#009E73"],
     check_pdb=True,
     exclude_amino_acids=None,
+    description=None,
 ):
     """Take site-level and mutation-level measurements and format into
     a dictionary that can be used to create a JSON file for the visualization.
@@ -365,6 +366,8 @@ def make_experiment_dictionary(
         Check that the chains and wildtype residues are in the structure.
     exclude_amino_acids: list or None
         Amino acids that should be excluded from the summary statistics
+    description: str or None
+        A short description of the dataset to show in the tool.
 
     Returns
     -------
@@ -491,6 +494,7 @@ def make_experiment_dictionary(
         "filter_cols": filter_cols,
         "tooltip_cols": tooltip_cols,
         "excludedAminoAcids": exclude_amino_acids,
+        "description": description,
     }
 
     return experiment_dict
@@ -642,6 +646,13 @@ class DictParamType(click.ParamType):
     default=None,
     help="Amino acids that should be excluded from the summary statistics",
 )
+@click.option(
+    "--description",
+    type=str,
+    required=False,
+    default=None,
+    help="Add a short description of the dataset to show in the tool.",
+)
 def cli(
     input,
     sitemap,
@@ -661,6 +672,7 @@ def cli(
     colors,
     check_pdb,
     exclude_amino_acids,
+    description,
 ):
     """Command line interface for creating a JSON file for visualizing protein data"""
     click.secho(
@@ -702,6 +714,7 @@ def cli(
         colors,
         check_pdb,
         exclude_amino_acids,
+        description,
     )
 
     # Write the dictionary to a json file
