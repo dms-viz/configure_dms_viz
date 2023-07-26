@@ -104,6 +104,14 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     pandas.DataFrame
     """
 
+    # Coerce values to floats to check if they are numeric
+    def is_numeric(value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+
     # Check that required columns are present in the sitemap data
     missing_sitemap_columns = {"sequential_site", "reference_site"} - set(
         sitemap_df.columns
@@ -139,13 +147,13 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
             fg="yellow",
         )
         sitemap_df["protein_site"] = sitemap_df["reference_site"].apply(
-            lambda y: y if str(y).isnumeric() else ""
+            lambda y: y if is_numeric(y) else ""
         )
     else:
         # Make sure that the provided protein column has no invalid values
         if (
             not sitemap_df["protein_site"]
-            .apply(lambda y: y == "" or str(y).isnumeric())
+            .apply(lambda y: y == "" or is_numeric(y))
             .all()
         ):
             raise ValueError(
@@ -154,7 +162,7 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
 
     # Add the included chains to the sitemap dataframe if there are any
     sitemap_df["chains"] = sitemap_df["protein_site"].apply(
-        lambda y: included_chains if str(y).isnumeric() else ""
+        lambda y: included_chains if is_numeric(y) else ""
     )
 
     # Drop the columns that aren't needed for the visualization
