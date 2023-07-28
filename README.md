@@ -101,6 +101,7 @@ configure-dms-viz \
 - `--check-pdb` <bool>: Whether to perform checks on the provided pdb structure including checking if the 'included chains' are present, what % of data sites are missing, and what % of wildtype residues in the data match at corresponding sites in the structure.
 - `--exclude-amino-acids` <list>: A comma separated list of amino acids that shouldn't be used to calculate the summary statistics (i.e. "\*, -")
 - `--description` <string>: A short description of the dataset that will show up in the tool if the user clicks a button for more information.
+- `--title` <string>: A short title to appear above the plot.
 
 ## Input Data Format
 
