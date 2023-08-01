@@ -9,9 +9,9 @@ from os.path import join
 virus = "sars2"
 
 # Paths to data directories
-virus_dir = f"tests/{virus}"
-output_dir = f"tests/{virus}/output"
-data_dir = f"tests/{virus}/escape"
+virus_dir = f"{virus}"
+output_dir = f"{virus}/output"
+data_dir = f"{virus}/escape"
 
 # Read in data for each virus
 experiments = pd.read_csv(join(virus_dir, f"experiments.csv"))
