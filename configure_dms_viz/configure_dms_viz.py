@@ -135,10 +135,10 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
         # Try to coerce the sequential sites into a numeric type
         try:
             sitemap_df["sequential_site"] = pd.to_numeric(sitemap_df["sequential_site"])
-        except ValueError:
+        except ValueError as err:
             raise ValueError(
                 "The sequential_site column of the sitemap is not numeric and cannot be coerced into a numeric type."
-            )
+            ) from err
 
     # If the protein site isn't specified, assume that it's the same as the reference site
     if "protein_site" not in sitemap_df.columns:
@@ -276,10 +276,10 @@ def check_filter_columns(mut_metric_df, filter_cols):
     for col in filter_column_names:
         try:
             pd.to_numeric(mut_metric_df[col])
-        except ValueError:
+        except ValueError as err:
             raise ValueError(
                 f"The column {col} contains values that cannot be coerced into numbers."
-            )
+            ) from err
 
     # Make sure that the filter columns don't have spaces in them
     for col in filter_column_names:
@@ -332,7 +332,7 @@ def make_experiment_dictionary(
     included_chains="polymer",
     excluded_chains="none",
     alphabet="RKHDEQNSTYWFAILMVGPC-*",
-    colors=["#0072B2", "#CC79A7", "#4C3549", "#009E73"],
+    colors=None,
     check_pdb=True,
     exclude_amino_acids=None,
     description=None,
@@ -369,7 +369,7 @@ def make_experiment_dictionary(
         A space separated string of chains that should not be shown on the protein structure (i.e. "B L R").
     alphabet: str
         The amino acid labels in the order the should be displayed on the heatmap.
-    colors: list
+    colors: list or None
         A list of colors that will be used for each condition in the experiment.
     check_pdb: bool
         Check that the chains and wildtype residues are in the structure.
@@ -437,6 +437,8 @@ def make_experiment_dictionary(
         pdb = structure
 
     # Get a list of the conditions and map these to the colors
+    if colors is None:
+        colors = ["#0072B2", "#CC79A7", "#4C3549", "#009E73"]
     if condition_col:
         conditions = list(set(mut_metric_df[condition_col]))
         if len(conditions) > len(colors):

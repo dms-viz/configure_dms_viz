@@ -45,7 +45,7 @@ def get_structure(pdb_input):
                 )
                 structure = Bio.PDB.PDBParser().get_structure(pdb_input[:-4], pdb_input)
         except Exception as e:
-            raise ValueError(f"Error reading PDB file {pdb_input}: {e}")
+            raise ValueError(f"Error reading PDB file {pdb_input}: {e}") from e
     elif len(pdb_input) == 4 and pdb_input.isalnum():  # Check for a valid PDB ID format
         # Try to fetch the structure from RCSB PDB
         response = requests.get(f"https://files.rcsb.org/download/{pdb_input}.cif")
@@ -61,7 +61,9 @@ def get_structure(pdb_input):
                         pdb_input, pdb_file_content
                     )
             except Exception as e:
-                raise ValueError(f"Error parsing PDB content for {pdb_input}: {e}")
+                raise ValueError(
+                    f"Error parsing PDB content for {pdb_input}: {e}"
+                ) from e
         else:
             raise ValueError(
                 f"Failed to download {pdb_input} from the RCSB database. Status code: {response.status_code}"
