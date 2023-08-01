@@ -6,7 +6,7 @@ __pycache__/
 *.pyc.pytest_cache/
 
 # Snakemake
-.snakemake/
+*.snakemake/
 
 # Virtual environments
 venv/
@@ -48,6 +48,3 @@ build/
 
 # Project specific direcotries
 notebooks
-tests/*
-!tests/sars2/
-tests/sars2/output/*
