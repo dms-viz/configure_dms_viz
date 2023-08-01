@@ -5,7 +5,7 @@ description = "Configure your data for visualization with dms-viz.github.io"
 authors = ["Will Hannon <hannonww@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "configure_dms_viz"}]
+packages = [{ include = "configure_dms_viz" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -23,3 +23,21 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 configure-dms-viz = "configure_dms_viz.configure_dms_viz:cli"
+
+[tool.ruff]
+# Enable flake8-bugbear (`B`) rules.
+select = ["E", "F", "B"]
+
+# Never enforce `E501` (line length violations).
+ignore = ["E501"]
+
+# Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+# Ignore these files and directories.
+extend-exclude = ["build", "dist", ".*"]
+
+# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402"]
+"path/to/file.py" = ["E402"]
