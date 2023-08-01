@@ -38,6 +38,9 @@ build/
 .tox/
 .pytest_cache/
 
+# ruff
+.ruff_cache/
+
 # Others
 *.log
 *.swp
