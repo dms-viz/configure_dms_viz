@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "configure-dms-viz"
+version = "0.1.0"
+description = "Configure your data for visualization with dms-viz.github.io"
+authors = ["Will Hannon <hannonww@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "configure_dms_viz"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.6"
+pandas = "^2.0.3"
+biopython = "^1.81"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+ruff = "^0.0.282"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+configure-dms-viz = "configure_dms_viz.configure_dms_viz:cli"
