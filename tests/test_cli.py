@@ -100,9 +100,9 @@ def combine_jsons(input_files, output_file):
 
 if __name__ == "__main__":
     virus = "sars2"
-    virus_dir = f"{virus}"
-    output_dir = f"{virus}/output"
-    data_dir = f"{virus}/escape"
+    virus_dir = f"tests/{virus}"
+    output_dir = f"tests/{virus}/output"
+    data_dir = f"tests/{virus}/escape"
 
     experiments = pd.read_csv(join(virus_dir, "experiments.csv"))
     sitemap_df_path = join(virus_dir, "site_numbering_map.csv")
