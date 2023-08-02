@@ -33,7 +33,7 @@ Before using `configure_dms_viz`, ensure that you have the following software in
 You can use the python package manager `pip` to install `configure_dms_viz` like so:
 
 ```bash
-pip install configure_dms_viz
+pip install configure-dms-viz
 ```
 
 You can check that the installation worked by running:
