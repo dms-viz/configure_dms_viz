@@ -4,7 +4,9 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-`configure_dms_viz` is a python utility for configuring an input file for the visualization tool [dms-viz](https://dms-viz.github.io/).
+---
+
+`configure_dms_viz` is a python utility created by the [Bloom Lab](https://research.fredhutch.org/bloom/en.html?gad=1&gclid=CjwKCAjw_aemBhBLEiwAT98FMrUu0b-uBYBHLlkGqcFPG2hLq7HMGbYTnmcHATXLYrHMckohVI-ClhoCkxgQAvD_BwE) that configures your data for the web-based visualization tool [dms-viz](https://dms-viz.github.io/).
 
 ## Table of Contents
 
@@ -21,48 +23,24 @@
 
 `configure_dms_viz` is a command-line tool designed to create a JSON file for the web-based visualization tool [`dms-viz`](https://dms-viz.github.io/). You can use [`dms-viz`](https://dms-viz.github.io/) to visualize site-level mutation data in the context of a 3D protein structure. With `configure_dms_viz`, users can generate a compatible JSON file that can be uploaded to the [`dms-viz`](https://dms-viz.github.io/) website for interactive analysis of their protein mutation data.
 
-## Prerequisites
+## Installation
 
 Before using `configure_dms_viz`, ensure that you have the following software installed:
 
-- Python version 3.10 or higher
-- Pandas
-- Snakemake
+- python >=3.10
+- pip
 
-We recommend using the `conda` package manager to set up a virtual environment and install the necessary tools. If you don't already have `conda`, you can download it from the [official website](https://docs.conda.io/en/latest/miniconda.html).
-
-Create a new conda environment and install the required packages:
+You can use the python package manager `pip` to install `configure_dms_viz` like so:
 
 ```bash
-conda create -n dms-viz python=3.10 snakemake pip -c conda-forge -c bioconda
-conda activate dms-viz
+pip install configure_dms_viz
 ```
 
-These commands will create a new conda environment called `dms-viz` with all the requirements needed to use this tool. Be sure that the `pip` command is referencing the correct `pip`. To do this, run the following command:
+You can check that the installation worked by running:
 
 ```bash
-which pip
+configure-dms-viz --help
 ```
-
-You should see an output like this:
-
-```bash
-/path/to/your/miniconda3/envs/dms-viz/bin/pip
-```
-
-Where the `pip` command is referencing the installation of pip in your new conda environment.
-
-## Installation
-
-Currently, the best way to use `configure_dms_viz` is by cloning the repository and using pip to initialize the command line tool:
-
-```bash
-git clone https://github.com/yourusername/configure_dms_viz.git
-cd configure_dms_viz
-pip install -e .
-```
-
-In the future, we plan to make this tool available as a package that can be installed via pip from PyPI or conda from conda-forge.
 
 ## Usage
 
