@@ -1,8 +1,8 @@
 name: Publish to Test PyPI on Pre-Release
 on:
-  push:
-    tags:
-      - "*.*.*"
+  release:
+    types:
+      - prereleased
 
 jobs:
   test_pypi_release:
