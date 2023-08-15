@@ -8,7 +8,7 @@ readme = "README.md"
 packages = [{ include = "configure_dms_viz" }]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 click = "^8.1.6"
 pandas = ">=2.0.0"
 biopython = ">=1.0"
