@@ -79,7 +79,8 @@ configure-dms-viz \
 - `--included-chains` <string>: A space-delimited string of chain names that correspond to the chains in your PDB structure that correspond to the reference sites in your data (i.e., `'C F M G J P'`). This is only necesary if your PDB structure contains chains that you do not have site- and mutation-level measurements for.
 - `--excluded-chains` <string>: A space-delimited string of chain names that should not be shown on the protein structure (i.e., `'B L R'`).
 - `--alphabet` <string>: A string with no spaces containing all the amino acids in your experiment and their desired order (i.e. `"RKHDEQNSTYWFAILMVGPC-*"`).
-- `--colors` <list>: A comma separated list of HEX format colors for representing different epitopes, i.e. `"#0072B2, #CC79A7, #4C3549, #009E73"`.
+- `--colors` <list>: A comma separated list of HEX format colors for representing different conditions, i.e. `"#0072B2, #CC79A7, #4C3549, #009E73"`.
+- `--negative-colors` <list>: A comma separated list of HEX format colors for representing the negative end of the scale for different conditions, i.e. `"#0072B2, #CC79A7, #4C3549, #009E73"`. If not provided, the inverse of each color is automatically calculated.
 - `--check-pdb` <bool>: Whether to perform checks on the provided pdb structure including checking if the 'included chains' are present, what % of data sites are missing, and what % of wildtype residues in the data match at corresponding sites in the structure.
 - `--exclude-amino-acids` <list>: A comma separated list of amino acids that shouldn't be used to calculate the summary statistics (i.e. "\*, -")
 - `--description` <string>: A short description of the dataset that will show up in the tool if the user clicks a button for more information.

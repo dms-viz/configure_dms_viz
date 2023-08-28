@@ -1,3 +1,5 @@
+"""Test the command line tool by running this script. To run the script, type `poetry run python tests/test_cli.py.`"""
+
 import json
 import pandas as pd
 from os.path import join
@@ -67,7 +69,7 @@ def create_viz_json(
         --excluded-chains "{exclude_chains}" \
         --filter-cols "{filter_cols}" \
         --tooltip-cols "{tooltip_cols}" \
-        --title "{experiment_name}" \
+        --title "{experiment_name}" 
     """
 
     subprocess.run(command, shell=True)

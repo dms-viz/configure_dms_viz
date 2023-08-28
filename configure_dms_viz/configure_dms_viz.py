@@ -333,6 +333,7 @@ def make_experiment_dictionary(
     excluded_chains="none",
     alphabet="RKHDEQNSTYWFAILMVGPC-*",
     colors=None,
+    negative_colors=None,
     check_pdb=True,
     exclude_amino_acids=None,
     description=None,
@@ -371,6 +372,8 @@ def make_experiment_dictionary(
         The amino acid labels in the order the should be displayed on the heatmap.
     colors: list or None
         A list of colors that will be used for each condition in the experiment.
+    colors: list or None
+        A list of colors that will be used for the negative end of the scale for each condition in the experiment.
     check_pdb: bool
         Check that the chains and wildtype residues are in the structure.
     exclude_amino_acids: list or None
@@ -458,6 +461,27 @@ def make_experiment_dictionary(
         conditions = []
         condition_colors = {"default": colors[0]}
 
+    # Format the negative colors for each condition
+    if negative_colors is not None:
+        if condition_col:
+            if len(negative_colors) != len(colors):
+                raise ValueError(
+                    f"There are {len(conditions)} conditions, but only {len(negative_colors)} negative color(s) specified. Please specify more colors."
+                )
+            for color in negative_colors:
+                # Check that the colors are valid HEX format
+                if not color.startswith("#") or len(color) != 7:
+                    raise ValueError(
+                        f"The negative color '{color}' is not valid. Please use a hex format color code."
+                    )
+            negative_condition_colors = {
+                condition: negative_colors[i] for i, condition in enumerate(conditions)
+            }
+        else:
+            negative_condition_colors = {"default": negative_colors[0]}
+    else:
+        negative_condition_colors = None
+
     # Rename the metric column to the metric name
     if metric_name:
         mut_metric_df = mut_metric_df.rename(columns={metric_col: metric_name})
@@ -500,6 +524,7 @@ def make_experiment_dictionary(
         "condition_col": condition_col,
         "conditions": conditions,
         "condition_colors": condition_colors,
+        "negative_condition_colors": negative_condition_colors,
         "alphabet": [aa for aa in alphabet],
         "pdb": pdb,
         "dataChains": included_chains.split(" "),
@@ -647,6 +672,13 @@ class DictParamType(click.ParamType):
     help='A list of colors to use for the conditions in the visualization. Example: "#0072B2, #CC79A7, #4C3549, #009E73"',
 )
 @click.option(
+    "--negative-colors",
+    type=ListParamType(),
+    required=False,
+    default=None,
+    help="A list of colors to use for the negative end of the scale for each condition in the visualization. If not provided, it will be the inverse of the positive colors.",
+)
+@click.option(
     "--check-pdb",
     type=bool,
     required=False,
@@ -691,6 +723,7 @@ def cli(
     excluded_chains,
     alphabet,
     colors,
+    negative_colors,
     check_pdb,
     exclude_amino_acids,
     description,
@@ -734,6 +767,7 @@ def cli(
         excluded_chains,
         alphabet,
         colors,
+        negative_colors,
         check_pdb,
         exclude_amino_acids,
         description,
