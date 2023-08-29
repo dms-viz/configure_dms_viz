@@ -325,6 +325,7 @@ def make_experiment_dictionary(
     structure,
     join_data=None,
     filter_cols=None,
+    filter_limits=None,
     tooltip_cols=None,
     metric_name=None,
     condition_col=None,
@@ -362,6 +363,8 @@ def make_experiment_dictionary(
         A list of pandas.dataFrames to join to the main dataframe by mutation/condition.
     filter_cols: dict or None
         A dictionary of column names and formatted names to designate as filters.
+    filter_limits: dict or None
+        A dictionary of the desired min and max values for each filter column slider range.
     tooltip_cols: dict or None
         A dictionary of column names and formatted names to designate as tooltips.
     included_chains: str or None
@@ -410,11 +413,55 @@ def make_experiment_dictionary(
 
     # Add the filter columns to the required columns
     if filter_cols:
-        cols_to_keep += check_filter_columns(mut_metric_df, filter_cols)
+        cols = check_filter_columns(mut_metric_df, filter_cols)
+        cols_to_keep += cols
+        if filter_limits:
+            filter_limits_cols = [col for col in filter_limits.keys()]
+            # Check that the columns are in the filter columns
+            missing_filter_limits_cols = set(filter_limits_cols) - set(cols)
+            if missing_filter_limits_cols:
+                raise ValueError(
+                    f"The following columns do not exist in the filter columns: {list(missing_filter_limits_cols)}"
+                )
+            for limit_col, limits in filter_limits.items():
+                # Check that both limits are specified
+                if len(limits) != 2:
+                    raise ValueError(
+                        f"The '{limit_col}' filter limits are not specified correctly. Please specify both the min and max values."
+                    )
+                # Check that the ranges specified are numeric
+                for limit in limits:
+                    try:
+                        pd.to_numeric(limit)
+                    except ValueError as err:
+                        raise ValueError(
+                            f"The '{limit_col}' filter limit '{limit}' cannot be coerced into a number."
+                        ) from err
+                # Check that the max limit is greater than the min limit
+                if limits[0] > limits[1]:
+                    raise ValueError(
+                        f"The '{limit_col}' filter limits are not specified correctly. The min value must be less than the max value."
+                    )
+                # Check that the specified limits are within the range of the data
+                if limits[0] < mut_metric_df[limit_col].min():
+                    # If the min is less than the min of the data, set it to the min of the data
+                    click.secho(
+                        message=f"The '{limit_col}' filter limit '{limits[0]}' is less than the minimum value of {mut_metric_df[limit_col].min()}. Setting the min value to {mut_metric_df[limit_col].min()}.",
+                        fg="red",
+                    )
+                    filter_limits[limit_col][0] = mut_metric_df[limit_col].min()
+
+                if limits[1] > mut_metric_df[limit_col].max():
+                    # If the max is greater than the max of the data, set it to the max of the data
+                    click.secho(
+                        message=f"The '{limit_col}' filter limit '{limits[1]}' is greater than the maximum value of {mut_metric_df[limit_col].max()}. Setting the max value to {mut_metric_df[limit_col].max()}.",
+                        fg="red",
+                    )
+                    filter_limits[limit_col][1] = mut_metric_df[limit_col].max()
 
     # Add the tooltip columns to required columns
     if tooltip_cols:
-        cols_to_keep += check_filter_columns(mut_metric_df, tooltip_cols)
+        cols_to_keep += check_tooltip_columns(mut_metric_df, tooltip_cols)
 
     # If there are excluded amino acids, check that they're in the alphabet
     if exclude_amino_acids:
@@ -530,6 +577,7 @@ def make_experiment_dictionary(
         "dataChains": included_chains.split(" "),
         "excludeChains": excluded_chains.split(" "),
         "filter_cols": filter_cols,
+        "filter_limits": filter_limits,
         "tooltip_cols": tooltip_cols,
         "excludedAminoAcids": exclude_amino_acids,
         "description": description,
@@ -630,6 +678,13 @@ class DictParamType(click.ParamType):
     help="Optionally, a space separated list of columns to use as filters in the visualization. Example: \"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}\"",
 )
 @click.option(
+    "--filter-limits",
+    type=DictParamType(),
+    required=False,
+    default=None,
+    help="Optionally, a space separated list of columns to use as filters in the visualization. Example: \"{'effect': [min, max], 'times_seen': [min, max]}\"",
+)
+@click.option(
     "--tooltip-cols",
     type=DictParamType(),
     required=False,
@@ -717,6 +772,7 @@ def cli(
     metric_name,
     condition_name,
     filter_cols,
+    filter_limits,
     tooltip_cols,
     join_data,
     included_chains,
@@ -759,6 +815,7 @@ def cli(
         structure,
         join_data_dfs,
         filter_cols,
+        filter_limits,
         tooltip_cols,
         metric_name,
         condition,

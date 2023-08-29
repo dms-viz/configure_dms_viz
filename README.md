@@ -76,6 +76,7 @@ configure-dms-viz \
 - `--join-data` <list>: A comma separated list of CSV file with data to join to the visualization data. This data can then be used in the visualization tooltips or filters. [See details below](#input-data-format) for formatting requirements.
 - `--tooltip-cols` <dict>: A dictionary that establishes the columns that you want to show up in the tooltip in the visualization (i.e. `"{'times_seen': '# Obsv', 'effect': 'Func Eff.'}"`).
 - `--filter-cols` <dict>: A dictionary that establishes the columns that you want to use as filters in the visualization (i.e. `"{'effect': 'Functional Effect', 'times_seen': 'Times Seen'}"`).
+- `--filter-limits` <dict>: A dictionary that establishes the range for each filter (i.e. `"{'effect': [min, max]), 'times_seen': [min, max]}"`).
 - `--included-chains` <string>: A space-delimited string of chain names that correspond to the chains in your PDB structure that correspond to the reference sites in your data (i.e., `'C F M G J P'`). This is only necesary if your PDB structure contains chains that you do not have site- and mutation-level measurements for.
 - `--excluded-chains` <string>: A space-delimited string of chain names that should not be shown on the protein structure (i.e., `'B L R'`).
 - `--alphabet` <string>: A string with no spaces containing all the amino acids in your experiment and their desired order (i.e. `"RKHDEQNSTYWFAILMVGPC-*"`).

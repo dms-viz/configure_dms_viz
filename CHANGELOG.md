@@ -26,12 +26,30 @@
 
 ### Changed
 
-- N/A (This is the first release)
+- N/A
 
 ### Deprecated
 
-- N/A (This is the first release)
+- N/A
 
 ### Removed
 
-- N/A (This is the first release)
+- N/A
+
+## [0.3.0] - 2023-08-29
+
+### Added
+
+- Make it possible to choose the colors on the negative color scale for each condition.
+
+### Changed
+
+- Fixed a bug where the filter columns were used for both filter and tooltip columns regardless of user input.
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A

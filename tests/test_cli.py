@@ -47,6 +47,7 @@ def create_viz_json(
         experiments["selection"] == experiment_name, "excludedChains"
     ].item()
     filter_cols = {"effect": "Functional Effect", "times_seen": "Times Seen"}
+    filter_limits = {"times_seen": [1, 100], "effect": [-1, 1]}
     tooltip_cols = {"times_seen": "# Obsv", "effect": "Func Eff."}
     metric = "escape_mean"
     metric_name = "Escape"
@@ -68,6 +69,7 @@ def create_viz_json(
         --included-chains "{include_chains}" \
         --excluded-chains "{exclude_chains}" \
         --filter-cols "{filter_cols}" \
+        --filter-limits "{filter_limits}" \
         --tooltip-cols "{tooltip_cols}" \
         --title "{experiment_name}" 
     """

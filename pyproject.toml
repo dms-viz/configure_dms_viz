@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "configure-dms-viz"
-version = "0.2.0"
+version = "0.3.0"
 description = "Configure your data for visualization with dms-viz.github.io"
 authors = ["Will Hannon <hannonww@gmail.com>"]
 license = "MIT"
