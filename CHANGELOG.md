@@ -53,3 +53,21 @@
 ### Removed
 
 - N/A
+
+## [0.3.1] - 2023-09-05
+
+### Added
+
+- N/A
+
+### Changed
+
+- Fixed a bug that occurs if `NaN` values are found in the `metric` column. If `NaN` is present the visualization tool records these is 'observed' but 'filtered' due to the way `NaN` values are handled by the visualization. There is no reason to have measurements with `NaN` in the metric column, so these are filtered out and the user is warned about their presence.
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A

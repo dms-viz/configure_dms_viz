@@ -75,6 +75,16 @@ def format_mutation_data(mut_metric_df, metric_col, condition_col, alphabet):
                 "Duplicates measurements per mutation were found in the mutation dataframe, please specify a condition column."
             )
 
+    # Check if there are any NaN values in the metric column
+    if mut_metric_df[metric_col].isna().any():
+        # Echo a warning to the user
+        click.secho(
+            message="\nWarning: NaN values were found in the metric column. These rows will be filtered out.",
+            fg="red",
+        )
+        # Drop the rows with NaN values in the metric column
+        mut_metric_df = mut_metric_df.dropna(subset=[metric_col])
+
     return mut_metric_df
 
 
@@ -446,7 +456,7 @@ def make_experiment_dictionary(
                 if limits[0] < mut_metric_df[limit_col].min():
                     # If the min is less than the min of the data, set it to the min of the data
                     click.secho(
-                        message=f"The '{limit_col}' filter limit '{limits[0]}' is less than the minimum value of {mut_metric_df[limit_col].min()}. Setting the min value to {mut_metric_df[limit_col].min()}.",
+                        message=f"Warning: The '{limit_col}' filter limit '{limits[0]}' is less than the minimum value of {mut_metric_df[limit_col].min()}. Setting the min value to {mut_metric_df[limit_col].min()}.",
                         fg="red",
                     )
                     filter_limits[limit_col][0] = mut_metric_df[limit_col].min()
@@ -454,7 +464,7 @@ def make_experiment_dictionary(
                 if limits[1] > mut_metric_df[limit_col].max():
                     # If the max is greater than the max of the data, set it to the max of the data
                     click.secho(
-                        message=f"The '{limit_col}' filter limit '{limits[1]}' is greater than the maximum value of {mut_metric_df[limit_col].max()}. Setting the max value to {mut_metric_df[limit_col].max()}.",
+                        message=f"Warning: The '{limit_col}' filter limit '{limits[1]}' is greater than the maximum value of {mut_metric_df[limit_col].max()}. Setting the max value to {mut_metric_df[limit_col].max()}.",
                         fg="red",
                     )
                     filter_limits[limit_col][1] = mut_metric_df[limit_col].max()
