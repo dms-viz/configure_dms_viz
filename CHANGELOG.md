@@ -71,3 +71,25 @@
 ### Removed
 
 - N/A
+
+## [0.3.2] - 2023-09-15
+
+### Added
+
+- Added tests/examples for three new datasets:
+  1. Caelan's HIV DMS data
+  2. Jesse's SARS-CoV-2 mutation fitness data
+  3. The Lauring lab's IAV PB1 DMS data
+- Configured the tests with `pytest`
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A

@@ -47,4 +47,11 @@ build/
 *.swo
 
 # Project specific direcotries
-notebooks
+tests/HIV-Envelope-BF520-DMS/output/*
+tests/IAV-PB1-DMS/output/*
+tests/SARS2-Mutation-Fitness/output/*
+tests/SARS2-Omicron-BA1-DMS/output/*
+!tests/HIV-Envelope-BF520-DMS/output/HIV-Envelope-BF520-DMS.json
+!tests/IAV-PB1-DMS/output/IAV-PB1-DMS.json
+!tests/SARS2-Mutation-Fitness/output/SARS2-Mutation-Fitness.json
+!tests/SARS2-Omicron-BA1-DMS/output/SARS2-Omicron-BA1-DMS.json

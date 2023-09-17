@@ -1,0 +1,2 @@
+input,sitemap,name,metric,metric_name,structure,included_chains,title,description
+tests/IAV-PB1-DMS/input/pb1_fitness.csv,tests/IAV-PB1-DMS/sitemap/sitemap.csv,IAV PB1,fitness,Replicative Fitness,7NHX,B,IAV PB1 Deep Mutational Scan,Deep mutational scan of influenza virus A/WSN/1933(H1N1) PB1 RdRp subunit

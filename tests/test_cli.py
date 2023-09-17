@@ -1,78 +1,44 @@
 """Test the command line tool by running this script. To run the script, type `poetry run python tests/test_cli.py.`"""
 
+import os
 import json
 import pandas as pd
-from os.path import join
 import subprocess
 
 
 def create_viz_json(
-    escape_df,
+    input_df,
     sitemap_df,
-    functional_score_df,
     output_path,
-    experiment_name,
-    experiments,
+    **kwargs,
 ):
     """
-    Creates a visualization JSON file for a given experiment.
+    Creates a visualization JSON file for a given experiment/dataset.
 
     Parameters
     ----------
-    escape_df : str
-        Path to the escape dataframe CSV.
+    input_df : str
+        Path to the input dataframe CSV (--input).
     sitemap_df : str
-        Path to the sitemap dataframe CSV.
-    functional_score_df : str
-        Path to the functional score dataframe CSV.
+        Path to the sitemap dataframe CSV (--sitemap).
     output_path : str
-        Path where the output JSON should be saved.
-    experiment_name : str
-        Name of the experiment.
-    experiments : pd.DataFrame
-        DataFrame containing experiments data.
+        Path to the output path JSON (--output).
 
     Returns
     -------
     None
         Executes a subprocess command and does not return any value.
     """
-    structure = experiments.loc[
-        experiments["selection"] == experiment_name, "pdb"
-    ].item()
-    include_chains = experiments.loc[
-        experiments["selection"] == experiment_name, "dataChains"
-    ].item()
-    exclude_chains = experiments.loc[
-        experiments["selection"] == experiment_name, "excludedChains"
-    ].item()
-    filter_cols = {"effect": "Functional Effect", "times_seen": "Times Seen"}
-    filter_limits = {"times_seen": [1, 100], "effect": [-1, 1]}
-    tooltip_cols = {"times_seen": "# Obsv", "effect": "Func Eff."}
-    metric = "escape_mean"
-    metric_name = "Escape"
-    condition = "epitope"
-    condition_name = "Epitope"
 
-    command = f""" 
+    command = f"""
     configure-dms-viz \
-        --input {escape_df} \
-        --name {experiment_name} \
-        --sitemap {sitemap_df} \
-        --metric {metric} \
-        --structure {structure} \
-        --metric-name {metric_name} \
-        --output {output_path} \
-        --condition {condition} \
-        --condition-name {condition_name} \
-        --join-data {functional_score_df} \
-        --included-chains "{include_chains}" \
-        --excluded-chains "{exclude_chains}" \
-        --filter-cols "{filter_cols}" \
-        --filter-limits "{filter_limits}" \
-        --tooltip-cols "{tooltip_cols}" \
-        --title "{experiment_name}" 
+        --input "{input_df}" \
+        --sitemap "{sitemap_df}" \
+        --output "{output_path}" \
     """
+
+    for key, value in kwargs.items():
+        command += f' --{key} "{value}"'
 
     subprocess.run(command, shell=True)
 
@@ -103,28 +69,32 @@ def combine_jsons(input_files, output_file):
 
 
 if __name__ == "__main__":
-    virus = "sars2"
-    virus_dir = f"tests/{virus}"
-    output_dir = f"tests/{virus}/output"
-    data_dir = f"tests/{virus}/escape"
-
-    experiments = pd.read_csv(join(virus_dir, "experiments.csv"))
-    sitemap_df_path = join(virus_dir, "site_numbering_map.csv")
-    functional_score_df_path = join(virus_dir, "muteffects_observed.csv")
-
-    json_files = []
-    for experiment_name in experiments.selection.unique():
-        escape_df_path = join(data_dir, f"{experiment_name}_avg.csv")
-        output_json_path = join(output_dir, f"{experiment_name}.json")
-        json_files.append(output_json_path)
-
-        create_viz_json(
-            escape_df_path,
-            sitemap_df_path,
-            functional_score_df_path,
-            output_json_path,
-            experiment_name,
-            experiments,
-        )
-
-    combine_jsons(json_files, join(output_dir, f"{virus}.json"))
+    # Test Datsets
+    test_datasets = [
+        "SARS2-Omicron-BA1-DMS",
+        "IAV-PB1-DMS",
+        "SARS2-Mutation-Fitness",
+        "HIV-Envelope-BF520-DMS",
+    ]
+    # Test the command line tool for each dataset
+    for dataset in test_datasets:
+        print("Testing:", dataset, "\n")
+        # Read in the datasets.csv
+        datasets = pd.read_csv(f"tests/{dataset}/datasets.csv")
+        # Create a visualization JSON for each dataset
+        viz_jsons = []
+        for row in datasets.itertuples():
+            # Get the arguments for the command line tool
+            arguments = {
+                key.replace("_", "-"): value
+                for key, value in row._asdict().items()
+                if key not in ["input", "sitemap", "Index"]
+            }
+            output_path = f"tests/{dataset}/output/{row.name}.json"
+            # Create the visualization JSON
+            create_viz_json(row.input, row.sitemap, output_path, **arguments)
+            viz_jsons.append(output_path)
+            # Join the visualization JSONs into a single JSON
+            combine_jsons(
+                viz_jsons, os.path.join(f"tests/{dataset}/output/", f"{dataset}.json")
+            )
