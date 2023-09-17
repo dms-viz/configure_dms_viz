@@ -22,4 +22,14 @@ These four examples are:
 
 ## Run Tests
 
-This section will contain details on how to run the tests.
+To run the tests, run the following command:
+
+```
+poetry run python tests/test_cli.py
+```
+
+From the root of the directory.
+
+### Configuring examples
+
+Each example is saved as a subdirectory within `tests/` containing a description of the dataset, the input data, the sitemap(s), join data (depending on the example), custom structures (depending on the example), and finally a `datasets.csv` file that contains a column for each flag and its value to be applied to a specific dataset.
