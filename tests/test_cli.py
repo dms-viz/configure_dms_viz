@@ -1,17 +1,13 @@
-"""Test the command line tool by running this script. To run the script, type `poetry run python tests/test_cli.py.`"""
+"""Test the command line tool with pytest on a set of datasets."""
 
 import os
 import json
 import pandas as pd
 import subprocess
+import pytest
 
 
-def create_viz_json(
-    input_df,
-    sitemap_df,
-    output_path,
-    **kwargs,
-):
+def create_viz_json(input_df, sitemap_df, output_path, **kwargs):
     """
     Creates a visualization JSON file for a given experiment/dataset.
 
@@ -36,11 +32,9 @@ def create_viz_json(
         --sitemap "{sitemap_df}" \
         --output "{output_path}" \
     """
-
     for key, value in kwargs.items():
         command += f' --{key} "{value}"'
-
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True, check=True)
 
 
 def combine_jsons(input_files, output_file):
@@ -59,6 +53,7 @@ def combine_jsons(input_files, output_file):
     None
         Writes combined data to a JSON file.
     """
+
     combined_data = {}
     for input_file in input_files:
         with open(input_file) as f:
@@ -68,33 +63,40 @@ def combine_jsons(input_files, output_file):
         json.dump(combined_data, f)
 
 
-if __name__ == "__main__":
-    # Test Datsets
-    test_datasets = [
+@pytest.fixture(scope="module")
+def test_datasets():
+    return [
         "SARS2-Omicron-BA1-DMS",
         "IAV-PB1-DMS",
         "SARS2-Mutation-Fitness",
         "HIV-Envelope-BF520-DMS",
     ]
-    # Test the command line tool for each dataset
+
+
+def test_create_viz_json(test_datasets):
     for dataset in test_datasets:
-        print("Testing:", dataset, "\n")
-        # Read in the datasets.csv
         datasets = pd.read_csv(f"tests/{dataset}/datasets.csv")
-        # Create a visualization JSON for each dataset
         viz_jsons = []
         for row in datasets.itertuples():
-            # Get the arguments for the command line tool
             arguments = {
                 key.replace("_", "-"): value
                 for key, value in row._asdict().items()
                 if key not in ["input", "sitemap", "Index"]
             }
             output_path = f"tests/{dataset}/output/{row.name}.json"
-            # Create the visualization JSON
-            create_viz_json(row.input, row.sitemap, output_path, **arguments)
-            viz_jsons.append(output_path)
-            # Join the visualization JSONs into a single JSON
+            try:
+                create_viz_json(row.input, row.sitemap, output_path, **arguments)
+                viz_jsons.append(output_path)
+            except subprocess.CalledProcessError as e:
+                pytest.fail(f"Command failed with error: {e}")
+
+        try:
             combine_jsons(
                 viz_jsons, os.path.join(f"tests/{dataset}/output/", f"{dataset}.json")
             )
+        except Exception as e:
+            pytest.fail(f"Combining JSON files failed with error: {e}")
+
+
+if __name__ == "__main__":
+    pytest.main([__file__])
