@@ -25,7 +25,7 @@ These four examples are:
 To run the tests, run the following command:
 
 ```
-poetry run python tests/test_cli.py
+poetry run pytest
 ```
 
 From the root of the directory.
