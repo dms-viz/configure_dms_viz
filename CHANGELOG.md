@@ -93,3 +93,22 @@
 ### Removed
 
 - N/A
+
+## [0.3.3] - 2023-09-15
+
+### Added
+
+- Add SARS-CoV-2 RBD antibody escape example
+- Filter out sites that don't have any mutations
+
+### Changed
+
+- Updated the descriptions for each test/example
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
