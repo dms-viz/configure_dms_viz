@@ -70,6 +70,7 @@ def test_datasets():
         "IAV-PB1-DMS",
         "SARS2-Mutation-Fitness",
         "HIV-Envelope-BF520-DMS",
+        "SARS2-RBD-REGN-DMS",
     ]
 
 

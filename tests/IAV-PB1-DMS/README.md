@@ -1,13 +1,31 @@
 # Deep mutational scanning reveals the functional constraints and evolutionary potential of the influenza A virus PB1 protein
 
-**Authors:** **Yuan Li**, Sarah Arcos, Kimberly R. Sabsay, Aartjan J.W. te Velthuis, **Adam S. Lauring**
-**Manuscript**: https://www.biorxiv.org/content/10.1101/2023.08.27.554986v1.full
+[Li et. al.](https://www.biorxiv.org/content/10.1101/2023.08.27.554986v1.full) measured the effects of thousands of mutations to the PB1 subunit of the RdRP on the replicative fitness of the lab-adapted influenza strain A/WSN/1933(H1N1) (Li et. al., 2023). 
 
-In this study, the authors preformed a deep-mutational scan of the influenza (IAV) A virus PB1 protein to assess the replicative fitness of mutations. Specifically, they used the A/WSN/1933(H1N1) (abbreviated WSN33) strain of influenza.
+The visualization above shows the mean mutation-fitness at each site in the PB1 subunit. Sites that tolerate the most mutational change will be closet to a fitness score of 0. The structure used for this visualization is [7NHX](https://www.rcsb.org/structure/7NHX), which is a cryo-EM structure of the 1918 H1N1 Viral influenza polymerase heterotrimer - full transcriptase (Class1). The IAV PB1 subunit is `chain B` of the full assembly.
 
-The structure used for this visualization is [7NHX](https://www.rcsb.org/structure/7NHX), which is a cryo-EM structure of the 1918 H1N1 Viral influenza polymerase heterotrimer - full transcriptase (Class1). The IAV PB1 subunit is `chain B` of the full assembly.
+The `configure-dms-viz` command used to generate this visualization is:
 
-A small amount of post-processing was performed on the raw data from the manuscript to conform to the data requirements detailed in the [documentation](https://dms-viz.github.io/dms-viz-docs/) of `dms-viz`:
+```bash
+configure-dms-viz
+  --input tests/IAV-PB1-DMS/input/pb1_fitness.csv
+  --sitemap tests/IAV-PB1-DMS/sitemap/sitemap.csv
+  --output tests/IAV-PB1-DMS/sitemap/pb1.json
+  --name "IAV PB1"
+  --metric "fitness"
+  --metric-name "Replicative Fitness"
+  --structure "7NHX"
+  --included-chains "B"
+  --title "IAV PB1 Deep Mutational Scan"
+  --description "Deep mutational scan of influenza virus A/WSN/1933(H1N1) PB1 RdRp subunit"
+```
+
+For more information about the study, check out the [manuscript](https://www.biorxiv.org/content/10.1101/2023.08.27.554986v1.full):
+> Deep mutational scanning reveals the functional constraints and evolutionary potential of the influenza A virus PB1 protein
+>
+> **Yuan Li**, Sarah Arcos, Kimberly R. Sabsay, Aartjan J.W. te Velthuis, **Adam S. Lauring**
+
+A small amount of pre-processing was performed on the raw data from the manuscript to conform to the data requirements detailed in the [documentation](https://dms-viz.github.io/dms-viz-docs/) of `dms-viz`:
 
 ```python
 # Import and format the data from the supplement

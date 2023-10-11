@@ -1,0 +1,2 @@
+input,sitemap,name,metric,metric_name,structure,included_chains,condition,condition_name,title,colors
+tests/SARS2-RBD-REGN-DMS/input/REGN_escape.csv,tests/SARS2-RBD-REGN-DMS/sitemap/sitemap.csv,REGN mAb Cocktail,mut_escape,Escape,6XDG,E,condition,Antibody,Escape from the Regeneron anti-RBD antibody cocktail,"#220ea1,#a10e0e"

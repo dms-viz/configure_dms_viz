@@ -85,6 +85,25 @@ def format_mutation_data(mut_metric_df, metric_col, condition_col, alphabet):
         # Drop the rows with NaN values in the metric column
         mut_metric_df = mut_metric_df.dropna(subset=[metric_col])
 
+    # Group by reference_site and filter groups where all mutants are the same as wildtype
+    sites_with_only_wildtype = mut_metric_df.groupby("reference_site").filter(
+        lambda x: (x["mutant"] == x["wildtype"].iloc[0]).all()
+    )
+
+    # Check if there are any such sites
+    if not sites_with_only_wildtype.empty:
+        # Echo a warning to the user
+        click.secho(
+            message="\nWarning: There are sites where there are no mutations, in other words, only the wildtype residue is present in the mutation column for that site. These rows will be filtered out.",
+            fg="red",
+        )
+        # Drop the rows where there are no mutations
+        mut_metric_df = mut_metric_df[
+            ~mut_metric_df["reference_site"].isin(
+                sites_with_only_wildtype["reference_site"]
+            )
+        ]
+
     return mut_metric_df
 
 
