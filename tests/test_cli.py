@@ -51,16 +51,14 @@ def combine_jsons(input_files, output_file):
     Returns
     -------
     None
-        Writes combined data to a JSON file.
+        Executes a subprocess command and does not return any value.
     """
-
-    combined_data = {}
-    for input_file in input_files:
-        with open(input_file) as f:
-            data = json.load(f)
-            combined_data.update(data)
-    with open(output_file, "w") as f:
-        json.dump(combined_data, f)
+    command = f"""
+    configure-dms-viz join \
+        --input "{', '.join(input_files)}" \
+        --output "{output_file}" \
+    """
+    subprocess.run(command, shell=True, check=True)
 
 
 @pytest.fixture(scope="module")
