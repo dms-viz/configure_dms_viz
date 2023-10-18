@@ -27,7 +27,7 @@ def create_viz_json(input_df, sitemap_df, output_path, **kwargs):
     """
 
     command = f"""
-    configure-dms-viz \
+    configure-dms-viz format \
         --input "{input_df}" \
         --sitemap "{sitemap_df}" \
         --output "{output_path}" \
