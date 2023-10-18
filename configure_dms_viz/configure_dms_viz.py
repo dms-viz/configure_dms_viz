@@ -616,7 +616,9 @@ def make_experiment_dictionary(
     return experiment_dict
 
 
-# Custom classes for click parameters
+# ============================== Command Line Interface ============================== #
+
+
 class ListParamType(click.ParamType):
     name = "list"
 
@@ -625,7 +627,7 @@ class ListParamType(click.ParamType):
             if isinstance(value, list):
                 return value
             elif isinstance(value, str):
-                return list(map(str, value.split(",")))
+                return [x.strip() for x in value.split(",")]
         except ValueError:
             self.fail(f"{value} is not a valid list", param, ctx)
 
@@ -640,8 +642,12 @@ class DictParamType(click.ParamType):
             self.fail(f"{value} is not a valid dictionary", param, ctx)
 
 
-# Command line interface for creating a JSON file for visualizing protein data
-@click.command("configure-dms-viz")
+@click.group()
+def cli():
+    pass
+
+
+@cli.command("format")
 @click.option(
     "--input",
     type=click.Path(exists=True),
@@ -790,7 +796,7 @@ class DictParamType(click.ParamType):
     default=None,
     help="A short title to appear above the plot.",
 )
-def cli(
+def format(
     input,
     sitemap,
     metric,
@@ -866,5 +872,76 @@ def cli(
 
     click.secho(
         message=f"\nSuccess! The visualization JSON was written to '{output}'",
+        fg="green",
+    )
+
+
+# Register this function to the main `cli` command group
+@cli.command("join")
+@click.option(
+    "--input",
+    type=ListParamType(),
+    required=True,
+    help="List of JSON files to be joined. Example: 'path/to/file1.json, path/to/file2.json'",
+)
+@click.option(
+    "--output",
+    type=click.Path(),
+    required=True,
+    help="Path to save the combined JSON file.",
+)
+@click.option(
+    "--description",
+    type=click.Path(exists=True, readable=True, file_okay=True),
+    help="Path to the markdown file to include as a global description.",
+    required=False,
+)
+def join_command(input, output, description):
+    """Join command that combines multiple JSON specification files into one."""
+
+    # Initialize an empty dictionary to store the combined data
+    combined_data = {}
+
+    # Handle markdown description
+    if description:
+        # Ensure that the file has a .md extension
+        if not description.endswith(".md"):
+            click.secho(
+                "The description file is not a markdown file. Ensure it has a .md extension.",
+                fg="red",
+            )
+            return
+
+        try:
+            with open(description, "r") as md_file:
+                markdown_content = md_file.read()
+                combined_data["markdown_description"] = markdown_content
+        except Exception as e:
+            click.secho(
+                f"Failed to read description markdown file. Error: {str(e)}", fg="red"
+            )
+            return
+
+    for file_path in input:
+        try:
+            with open(file_path, "r") as f:
+                data = json.load(f)
+                combined_data.update(data)
+        except Exception as e:
+            click.secho(
+                f"Failed to process file {file_path}. Error: {str(e)}", fg="red"
+            )
+            return
+
+    try:
+        # Write the combined data to the specified output file
+        with open(output, "w") as f:
+            json.dump(combined_data, f, indent=4)
+    except Exception as e:
+        click.secho(f"Failed to write to output file. Error: {str(e)}", fg="red")
+        return
+
+    click.secho(
+        message=f"\nSuccess! {len(input)} JSON files were merged and saved to '{output}'",
         fg="green",
     )

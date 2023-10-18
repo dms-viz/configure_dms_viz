@@ -112,3 +112,22 @@
 ### Removed
 
 - N/A
+
+## [1.0.0] - 2023-10-17
+
+### Added
+
+- Add a sub command that joins together datasets into a single JSON file.
+
+### Changed
+
+- Breaking change that splits configure-dms-viz into to subcommads – format and join.
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
+
