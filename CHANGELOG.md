@@ -117,7 +117,7 @@
 
 ### Added
 
-- Add a sub command that joins together datasets into a single JSON file.
+- Add a subcommand that joins together datasets into a single JSON file.
 
 ### Changed
 
