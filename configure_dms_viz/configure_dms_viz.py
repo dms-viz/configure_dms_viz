@@ -936,7 +936,7 @@ def join_command(input, output, description):
     try:
         # Write the combined data to the specified output file
         with open(output, "w") as f:
-            json.dump(combined_data, f, indent=4)
+            json.dump(combined_data, f)
     except Exception as e:
         click.secho(f"Failed to write to output file. Error: {str(e)}", fg="red")
         return
