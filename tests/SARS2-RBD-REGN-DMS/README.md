@@ -15,7 +15,7 @@ For more details on how to use `dms-viz` with your own data, [check out the docu
 The `configure-dms-viz` command used to generate this visualization is:
 
 ```bash
-configure-dms-viz 
+configure-dms-viz format
   --input "input/REGN_escape.csv" 
   --sitemap "sitemap/sitemap.csv" 
   --output "REGN_cocktail.json" 

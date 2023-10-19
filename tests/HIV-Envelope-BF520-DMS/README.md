@@ -7,7 +7,7 @@ This visualization shows the escape profiles from a several sera and monoclonal 
 The `configure-dms-viz` command used to generate these visualizations is:
 
 ```bash
-configure-dms-viz
+configure-dms-viz format
   --input tests/HIV-Envelope-BF520-DMS/input/IDC508_avg.csv
   --sitemap tests/HIV-Envelope-BF520-DMS/sitemap/sitemap.csv
   --output tests/HIV-Envelope-BF520-DMS/output/IDC508.json

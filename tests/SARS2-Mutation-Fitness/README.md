@@ -5,7 +5,7 @@ In this study, the authors estimated the fitness effects of mutations to all SAR
 The `configure-dms-viz` command used to generate this visualization is:
 
 ```bash
-configure-dms-viz
+configure-dms-viz format
   --input tests/SARS2-Mutation-Fitness/input/S_fitness.csv
   --sitemap tests/SARS2-Mutation-Fitness/sitemap/S_sitemap.csv
   --output tests/SARS2-Mutation-Fitness/sitemap/S.json
