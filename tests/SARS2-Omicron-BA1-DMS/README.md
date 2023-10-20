@@ -7,7 +7,7 @@ The visualization above shows the total mutation-escape for each antibody on the
 The `configure-dms-viz` command used to generate this visualization is:
 
 ```bash
-configure-dms-viz
+configure-dms-viz format
   --input tests/SARS2-Omicron-BA1-DMS/input/LyCoV-1404_avg.csv
   --sitemap tests/SARS2-Omicron-BA1-DMS/sitemap/sitemap.csv
   --output tests/SARS2-Omicron-BA1-DMS/output/LyCoV-1404_avg.json

@@ -7,7 +7,7 @@ The visualization above shows the mean mutation-fitness at each site in the PB1 
 The `configure-dms-viz` command used to generate this visualization is:
 
 ```bash
-configure-dms-viz
+configure-dms-viz format
   --input tests/IAV-PB1-DMS/input/pb1_fitness.csv
   --sitemap tests/IAV-PB1-DMS/sitemap/sitemap.csv
   --output tests/IAV-PB1-DMS/sitemap/pb1.json

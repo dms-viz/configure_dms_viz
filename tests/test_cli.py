@@ -1,7 +1,6 @@
 """Test the command line tool with pytest on a set of datasets."""
 
 import os
-import json
 import pandas as pd
 import subprocess
 import pytest
@@ -27,7 +26,7 @@ def create_viz_json(input_df, sitemap_df, output_path, **kwargs):
     """
 
     command = f"""
-    configure-dms-viz \
+    configure-dms-viz format \
         --input "{input_df}" \
         --sitemap "{sitemap_df}" \
         --output "{output_path}" \
@@ -37,7 +36,7 @@ def create_viz_json(input_df, sitemap_df, output_path, **kwargs):
     subprocess.run(command, shell=True, check=True)
 
 
-def combine_jsons(input_files, output_file):
+def combine_jsons(input_files, output_file, description_file):
     """
     Combines multiple JSON files into a single file.
 
@@ -51,16 +50,15 @@ def combine_jsons(input_files, output_file):
     Returns
     -------
     None
-        Writes combined data to a JSON file.
+        Executes a subprocess command and does not return any value.
     """
-
-    combined_data = {}
-    for input_file in input_files:
-        with open(input_file) as f:
-            data = json.load(f)
-            combined_data.update(data)
-    with open(output_file, "w") as f:
-        json.dump(combined_data, f)
+    command = f"""
+    configure-dms-viz join \
+        --input "{', '.join(input_files)}" \
+        --output "{output_file}" \
+        --description "{description_file}" \
+    """
+    subprocess.run(command, shell=True, check=True)
 
 
 @pytest.fixture(scope="module")
@@ -93,7 +91,9 @@ def test_create_viz_json(test_datasets):
 
         try:
             combine_jsons(
-                viz_jsons, os.path.join(f"tests/{dataset}/output/", f"{dataset}.json")
+                viz_jsons,
+                os.path.join(f"tests/{dataset}/output/", f"{dataset}.json"),
+                f"tests/{dataset}/README.md",
             )
         except Exception as e:
             pytest.fail(f"Combining JSON files failed with error: {e}")
