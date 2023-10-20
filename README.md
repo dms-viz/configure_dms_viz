@@ -8,5 +8,4 @@
 
 `configure_dms_viz` is a python utility that formats your data for the visualization tool [dms-viz](https://dms-viz.github.io/).
 
-For details on how to use `configure_dms_viz`, check out the [documentation](http://localhost:5173/dms-viz-docs/).
-
+For details on how to use `configure_dms_viz`, check out the [documentation](https://dms-viz.github.io/dms-viz-docs/).
