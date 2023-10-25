@@ -1,4 +1,4 @@
-# Prospective mapping of viral mutations that escape antibodies used to treat COVID-19
+# Escape from the antibodies in the Regeneron cocktail targeting the SARS-CoV-2 RBD
 
 `dms-viz` is an interactive tool designed to visualize mutation-level data on an associated protein structure. This example visualization is showing how mutations to the SARS-CoV-2 receptor binding domain (RBD) escape antibody binding by two (previously) clinically approved monoclonal antibodies – REGN10933 and REGN10987. The protein structure is the RBD bound by the Fab fragments of both antibodies [PDB 6XDG](https://www.rcsb.org/structure/6XDG).
 
