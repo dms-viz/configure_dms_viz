@@ -131,3 +131,20 @@
 
 - N/A
 
+## [1.1.0] - 2023-10-17
+
+### Added
+
+- Add the ability to include a 'chain' column in the sitemap to support discontinuous sites.
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
