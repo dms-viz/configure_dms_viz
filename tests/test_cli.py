@@ -69,7 +69,6 @@ def test_datasets():
         "SARS2-Mutation-Fitness",
         "HIV-Envelope-BF520-DMS",
         "SARS2-RBD-REGN-DMS",
-        "ZIKV-NS2B-NS3-DMS",
     ]
 
 
