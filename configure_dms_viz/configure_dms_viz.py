@@ -179,7 +179,7 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     # If the protein site isn't specified, assume that it's the same as the reference site
     if "protein_site" not in sitemap_df.columns:
         click.secho(
-            message="\n'protein_site' column is not present in the sitemap. Assuming that the reference sites correspond to protein sites.",
+            message="\n'protein_site' column is not present in the sitemap. Assuming that the reference sites correspond to protein sites.\n",
             fg="yellow",
         )
         sitemap_df["protein_site"] = sitemap_df["reference_site"].apply(
@@ -507,18 +507,23 @@ def make_experiment_dictionary(
                 if values[0] < mut_metric_df[limit_col].min():
                     # If the min is less than the min of the data, set it to the min of the data
                     click.secho(
-                        message=f"Warning: The '{limit_col}' filter limit '{values[0]}' is less than the minimum value of {mut_metric_df[limit_col].min()}. Setting the min value to {mut_metric_df[limit_col].min()}.",
+                        message=f"Warning: The '{limit_col}' filter limit '{values[0]}' is less than the minimum value of {mut_metric_df[limit_col].min()}. Setting the min value to {mut_metric_df[limit_col].min()}.\n",
                         fg="red",
                     )
                     filter_limits[limit_col][0] = mut_metric_df[limit_col].min()
                 if values[-1] > mut_metric_df[limit_col].max():
                     # If the max is greater than the max of the data, set it to the max of the data
                     click.secho(
-                        message=f"Warning: The '{limit_col}' filter limit '{values[1]}' is greater than the maximum value of {mut_metric_df[limit_col].max()}. Setting the max value to {mut_metric_df[limit_col].max()}.",
+                        message=f"Warning: The '{limit_col}' filter limit '{values[1]}' is greater than the maximum value of {mut_metric_df[limit_col].max()}. Setting the max value to {mut_metric_df[limit_col].max()}.\n",
                         fg="red",
                     )
                     filter_limits[limit_col][1] = mut_metric_df[limit_col].max()
-
+        else:
+            # Warn the user that it's recommended that they provide filter limits
+            click.secho(
+                message="Warning: It's highly recommended that you provide filter limits and a default value for the sliders.\n",
+                fg="red",
+            )
     # Add the tooltip columns to required columns
     if tooltip_cols:
         cols_to_keep += check_tooltip_columns(mut_metric_df, tooltip_cols)
