@@ -20,13 +20,13 @@ def format_mutation_data(mut_metric_df, metric_col, condition_col, alphabet):
     Parameters
     ----------
     mut_metric_df: pandas.DataFrame
-        A dataframe containig site- and mutation-level data for visualization.
+        A dataframe containing site- and mutation-level data for visualization.
     metric_col: str
         The name of the column the contains the metric for visualization.
     condition_col: str
         The name of the column the contains the condition if there are multiple measurements per mutation
     alphabet: list
-        A list of the amino acid names correspoinding to the mutagenized residues.
+        A list of the amino acid names corresponding to the mutagenized residues.
 
     Returns
     -------
@@ -122,11 +122,11 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     Parameters
     ----------
     mut_metric_df: pandas.DataFrame
-        A dataframe containig site- and mutation-level data for visualization.
+        A dataframe containing site- and mutation-level data for visualization.
     sitemap_df: pandas.DataFrame
         A dataframe mapping sequential sites to reference sites to protein sites.
     included_chains: list
-        A list of the protien chains to include in the visualization.
+        A list of the protein chains to include in the visualization.
 
     Returns
     -------
@@ -231,12 +231,12 @@ def join_additional_data(mut_metric_df, join_data):
 
     *Note that there currently this data should apply to all site and should
     be identical between conditions. Otherwise, there will be an
-    errror about duplicate data.*
+    error about duplicate data.*
 
     Parameters
     ----------
     mut_metric_df: pandas.DataFrame
-        A dataframe containig site- and mutation-level data for visualization.
+        A dataframe containing site- and mutation-level data for visualization.
     join_data: list of pandas.DataFrame
         A list of dataframes to join to the main mutation dataframe.
 
@@ -247,7 +247,7 @@ def join_additional_data(mut_metric_df, join_data):
 
     """
     for df in join_data:
-        # Check that the neccessary columns are present, first the reference_sites
+        # Check that the necessary columns are present, first the reference_sites
         if "reference_site" not in set(df.columns):
             if "site" in set(df.columns):
                 df.rename({"site": "reference_site"})
@@ -299,7 +299,7 @@ def check_filter_columns(mut_metric_df, filter_cols):
     Parameters
     ----------
     mut_metric_df: pandas.DataFrame
-        A dataframe containig site- and mutation-level data for visualization.
+        A dataframe containing site- and mutation-level data for visualization.
     filter_cols: dict
         A dictionary of column names and values to filter the dataframe by.
 
@@ -342,7 +342,7 @@ def check_tooltip_columns(mut_metric_df, tooltip_cols):
     Parameters
     ----------
     mut_metric_df: pandas.DataFrame
-        A dataframe containig site- and mutation-level data for visualization.
+        A dataframe containing site- and mutation-level data for visualization.
     tooltip_cols: dict
         A dictionary of column names and values use as tooltips in the visualization.
 
@@ -389,10 +389,10 @@ def make_experiment_dictionary(
     """Take site-level and mutation-level measurements and format into
     a dictionary that can be used to create a JSON file for the visualization.
 
-    Prameters
+    Parameters
     ---------
     mut_metric_df: pandas.DataFrame
-        A dataframe containig site- and mutation-level data for visualization.
+        A dataframe containing site- and mutation-level data for visualization.
     metric_col: str
         The name of the column the contains the metric for visualization.
     sitemap_df: pandas.DataFrame
@@ -469,38 +469,52 @@ def make_experiment_dictionary(
                 raise ValueError(
                     f"The following columns do not exist in the filter columns: {list(missing_filter_limits_cols)}"
                 )
-            for limit_col, limits in filter_limits.items():
-                # Check that both limits are specified
-                if len(limits) != 2:
+            for limit_col, values in filter_limits.items():
+                # Check that the ranges specified are numeric
+                for value in values:
+                    try:
+                        pd.to_numeric(value)
+                    except ValueError as err:
+                        raise ValueError(
+                            f"The '{limit_col}' filter limit or default value '{value}' cannot be coerced into a number."
+                        ) from err
+
+                # If there are two values, then these are just the min and max
+                if len(values) == 2:
+                    click.secho(
+                        message="Warning: you've only provided a min and max for the slides. It's HIGHLY recommended that you provide a default value as well.",
+                        fg="red",
+                    )
+                    # Check that the values are in the correct order
+                    if values[0] > values[2]:
+                        raise ValueError(
+                            f"The '{limit_col}' filter limits are not specified correctly. The min value must be less than the max value."
+                        )
+                # If there are three values, the this is the min, default, and max
+                elif len(values) == 3:
+                    # Check that the values are in the correct order
+                    if values[0] >= values[1] >= values[2]:
+                        raise ValueError(
+                            f"The '{limit_col}' filter limits are not specified correctly. The min value must be less than the max value and the default must be in between."
+                        )
+                # If the length isn't 2 or 3, then raise an error
+                else:
                     raise ValueError(
                         f"The '{limit_col}' filter limits are not specified correctly. Please specify both the min and max values."
                     )
-                # Check that the ranges specified are numeric
-                for limit in limits:
-                    try:
-                        pd.to_numeric(limit)
-                    except ValueError as err:
-                        raise ValueError(
-                            f"The '{limit_col}' filter limit '{limit}' cannot be coerced into a number."
-                        ) from err
-                # Check that the max limit is greater than the min limit
-                if limits[0] > limits[1]:
-                    raise ValueError(
-                        f"The '{limit_col}' filter limits are not specified correctly. The min value must be less than the max value."
-                    )
+
                 # Check that the specified limits are within the range of the data
-                if limits[0] < mut_metric_df[limit_col].min():
+                if values[0] < mut_metric_df[limit_col].min():
                     # If the min is less than the min of the data, set it to the min of the data
                     click.secho(
-                        message=f"Warning: The '{limit_col}' filter limit '{limits[0]}' is less than the minimum value of {mut_metric_df[limit_col].min()}. Setting the min value to {mut_metric_df[limit_col].min()}.",
+                        message=f"Warning: The '{limit_col}' filter limit '{values[0]}' is less than the minimum value of {mut_metric_df[limit_col].min()}. Setting the min value to {mut_metric_df[limit_col].min()}.",
                         fg="red",
                     )
                     filter_limits[limit_col][0] = mut_metric_df[limit_col].min()
-
-                if limits[1] > mut_metric_df[limit_col].max():
+                if values[-1] > mut_metric_df[limit_col].max():
                     # If the max is greater than the max of the data, set it to the max of the data
                     click.secho(
-                        message=f"Warning: The '{limit_col}' filter limit '{limits[1]}' is greater than the maximum value of {mut_metric_df[limit_col].max()}. Setting the max value to {mut_metric_df[limit_col].max()}.",
+                        message=f"Warning: The '{limit_col}' filter limit '{values[1]}' is greater than the maximum value of {mut_metric_df[limit_col].max()}. Setting the max value to {mut_metric_df[limit_col].max()}.",
                         fg="red",
                     )
                     filter_limits[limit_col][1] = mut_metric_df[limit_col].max()

@@ -148,3 +148,21 @@
 ### Removed
 
 - N/A
+
+## [1.1.1] - 2023-11-03
+
+### Added
+
+- Add the ability to specify a default value for the filter sliders.
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
