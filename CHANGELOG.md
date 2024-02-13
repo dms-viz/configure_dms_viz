@@ -166,3 +166,22 @@
 ### Removed
 
 - N/A
+
+
+## [1.2.0] - 2024-02-13
+
+### Added
+
+- N/A
+
+### Changed
+
+- It's now possible to include `protein_sites` proceed by insertion codes like (i.e. 52A, 214B, etc...). Previously, `protein_sites` could only be numeric and non-numeric sites were ignored by the `dms-viz`.
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A

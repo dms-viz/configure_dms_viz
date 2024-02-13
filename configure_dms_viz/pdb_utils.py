@@ -173,10 +173,19 @@ def check_wildtype_residues(structure, mut_metric_df, sitemap_df, excluded_chain
         total_sites += 1
         matches_wildtype_at_site = []
         site_not_in_structure = []
+        # Convert the structure object a dictionary to include insertion codes in the residue id
+        structure_dict = {
+            chain: {
+                (str(residue.id[1]) + residue.id[2]).strip(): seq1(residue.resname)
+                for residue in structure[0][chain]
+                if residue.id[0] == " "
+            }
+            for chain in chains
+        }
         for chain in chains:
             try:
-                residue = structure[0][chain][int(site)]
-                if seq1(residue.resname) == wildtype.upper():
+                residue = structure_dict[chain][str(site)]
+                if residue == wildtype.upper():
                     matches_wildtype_at_site.append(True)
                 else:
                     matches_wildtype_at_site.append(False)

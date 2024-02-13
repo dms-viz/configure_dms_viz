@@ -112,12 +112,13 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     """Check that the sitemap data is in the correct format.
 
     This data should be a pandas.DataFrame with the following columns:
-    - reference_site: The site number in the reference sequence that
+    - reference_site: (numeric or string) The site number in the reference sequence that
         corresponds to the reference site in the mutation dataframe
-    - sequential_site: The order of the site in the protein sequence and
+    - sequential_site: (numeric) The order of the site in the protein sequence and
         on the x-axis of the visualization
-    - protein_site: [Optional] The site number in the protein structure if
-        different from the reference site
+    - protein_site: [Optional] (numeric or string) The site number in the protein structure if
+        different from the reference site. This can include insertion codes and
+        therefore can be a string.
 
     Parameters
     ----------
@@ -182,9 +183,7 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
             message="\n'protein_site' column is not present in the sitemap. Assuming that the reference sites correspond to protein sites.\n",
             fg="yellow",
         )
-        sitemap_df["protein_site"] = sitemap_df["reference_site"].apply(
-            lambda y: y if is_numeric(y) else ""
-        )
+        sitemap_df["protein_site"] = sitemap_df["reference_site"].apply(lambda y: y)
         # Check how many of the protein sites are thrown out
         num_empty_protein_sites = (sitemap_df["protein_site"] == "").sum()
         if num_empty_protein_sites > 0.10 * len(sitemap_df):
@@ -193,22 +192,11 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
                 fg="red",
             )
 
-    else:
-        # Make sure that the provided protein column has no invalid values
-        if (
-            not sitemap_df["protein_site"]
-            .apply(lambda y: y == "" or is_numeric(y))
-            .all()
-        ):
-            raise ValueError(
-                "The protein_site column of the sitemap contains invalid values that cannot be coerced into a numeric form."
-            )
-
     # If the sitemap doesn't already have a column for chains, add it
     if "chains" not in sitemap_df.columns:
         # Add the included chains to the sitemap dataframe if there are any
         sitemap_df["chains"] = sitemap_df["protein_site"].apply(
-            lambda y: included_chains if is_numeric(y) else ""
+            lambda y: included_chains
         )
 
     # Drop the columns that aren't needed for the visualization
