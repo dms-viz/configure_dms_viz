@@ -957,6 +957,14 @@ def join_command(input, output, description):
             )
             return
 
+    # Raise an error if the keys in the input files are not unique
+    if len(combined_data) != len(input):
+        click.secho(
+            "The keys in the input files are not unique. Please ensure that the keys are unique.",
+            fg="red",
+        )
+        return
+
     try:
         # Write the combined data to the specified output file
         with open(output, "w") as f:

@@ -185,3 +185,21 @@
 ### Removed
 
 - N/A
+
+## [1.2.0] - 2024-03-01
+
+### Added
+
+- Added a warning to `join` if two `json` datasets have the name top-level key/name.
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
