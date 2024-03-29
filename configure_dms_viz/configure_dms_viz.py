@@ -426,6 +426,12 @@ def make_experiment_dictionary(
         A dictionary containing a single dataset for visualization to convert into a JSON file.
     """
 
+    # Make sure the chain names are valid and not just whitespace
+    if not included_chains.strip():
+        included_chains = "polymer"
+    if not excluded_chains.strip():
+        excluded_chains = "none"
+
     # Check that the necessary columns are present in the mut_metric dataframe and format
     mut_metric_df = format_mutation_data(
         mut_metric_df, metric_col, condition_col, alphabet
