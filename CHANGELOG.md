@@ -220,3 +220,22 @@
 ### Removed
 
 - N/A
+
+## [1.3.0] - 2024-04-02
+
+### Added
+
+- N/A
+
+### Changed
+
+- Sitemaps are now optional. If you do not provide one, all sites are sequential and the reference sites in your input data are the same as the protein sites.
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
+
