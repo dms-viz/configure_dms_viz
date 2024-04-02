@@ -239,3 +239,20 @@
 
 - N/A
 
+## [1.3.1] - 2024-04-02
+
+### Added
+
+- N/A
+
+### Changed
+
+- When checking the protein structure, don't include site with non-matching wildtype resides as "missing".
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
