@@ -198,8 +198,15 @@ def check_wildtype_residues(structure, mut_metric_df, sitemap_df, excluded_chain
             missing_sites += 1
 
     # How many residues match at sites present in the structure?
-    total_matching_residues = matching_residues / (total_sites - missing_sites)
-    total_matching_string = f"({matching_residues} of {total_sites - missing_sites})"
+    assert matching_residues <= total_sites - missing_sites
+    if total_sites == missing_sites:
+        total_matching_residues = 0
+        total_matching_string = "(0 of 0)"
+    else:
+        total_matching_residues = matching_residues / (total_sites - missing_sites)
+        total_matching_string = (
+            f"({matching_residues} of {total_sites - missing_sites})"
+        )
     # How many sites in the data are missing in the structure?
     total_missing_sites = missing_sites / total_sites
     total_missing_string = f"({missing_sites} of {total_sites})"

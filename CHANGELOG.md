@@ -256,3 +256,21 @@
 ### Removed
 
 - N/A
+
+## [1.3.2] - 2024-04-02
+
+### Added
+
+- N/A
+
+### Changed
+
+- Fix a bug where `protein` sites aren't properly mapped to the structure if they're of type `Float`.
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A

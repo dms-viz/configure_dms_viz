@@ -134,14 +134,6 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     pandas.DataFrame
     """
 
-    # Coerce values to floats to check if they are numeric
-    def is_numeric(value):
-        try:
-            float(value)
-            return True
-        except ValueError:
-            return False
-
     # Check that required columns are present in the sitemap data
     missing_sitemap_columns = {"sequential_site", "reference_site"} - set(
         sitemap_df.columns
@@ -203,6 +195,11 @@ def format_sitemap_data(sitemap_df, mut_metric_df, included_chains):
     sitemap_df = sitemap_df[
         ["reference_site", "protein_site", "sequential_site", "chains"]
     ]
+
+    # If a column is of type float, convert it to an integer
+    for col in sitemap_df.columns:
+        if sitemap_df[col].dtype == "float64":
+            sitemap_df[col] = sitemap_df[col].astype(int)
 
     return sitemap_df
 
