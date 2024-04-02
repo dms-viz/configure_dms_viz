@@ -383,10 +383,10 @@ def make_experiment_dictionary(
         A dataframe containing site- and mutation-level data for visualization.
     metric_col: str
         The name of the column the contains the metric for visualization.
-    sitemap_df: pandas.DataFrame
-        A dataframe mapping sequential sites to reference sites to protein sites.
     structure: str
         An RCSB PDB ID (i.e. 6UDJ) or the path to a file with a *.pdb extension.
+    sitemap_df: pandas.DataFrame or None
+        A dataframe mapping sequential sites to reference sites to protein sites.
     metric_name: str or None
         Rename the metric column to this name if desired. This name shows up in the plot.
     condition_col: str or None
@@ -436,6 +436,21 @@ def make_experiment_dictionary(
     mut_metric_df = format_mutation_data(
         mut_metric_df, metric_col, condition_col, alphabet
     )
+
+    # If there is no sitemap dataframe, create a default one
+    if sitemap_df is None:
+        click.secho(
+            message="Warning: No sitemap dataframe was provided. Creating a default sitemap.",
+            fg="yellow",
+        )
+        sitemap_df = pd.DataFrame(
+            {
+                "reference_site": mut_metric_df["reference_site"].unique(),
+                "sequential_site": range(
+                    1, len(mut_metric_df["reference_site"].unique()) + 1
+                ),
+            }
+        )
 
     # Check that the necessary columns are present in the sitemap dataframe and format
     sitemap_df = format_sitemap_data(sitemap_df, mut_metric_df, included_chains)
@@ -685,12 +700,6 @@ def cli():
     help="Path to a csv with site- and mutation-level data to visualize on a protein structure.",
 )
 @click.option(
-    "--sitemap",
-    type=click.Path(exists=True),
-    required=True,
-    help="Path to a csv with a mapping of sequential sites to reference sites to protein sites.",
-)
-@click.option(
     "--metric",
     type=str,
     required=True,
@@ -701,6 +710,13 @@ def cli():
     type=str,
     required=True,
     help="An RCSB PDB ID (i.e. 6UDJ) or the path to a file with a *.pdb extension.",
+)
+@click.option(
+    "--sitemap",
+    type=click.Path(exists=True),
+    required=False,
+    default=None,
+    help="Path to a csv with a mapping of sequential sites to reference sites to protein sites.",
 )
 @click.option(
     "--name",
@@ -869,8 +885,11 @@ def format(
         join_data_dfs = None
 
     # Read in the sitemap data
-    sitemap_df = pd.read_csv(sitemap)
-    click.secho(message=f"\nUsing sitemap from '{sitemap}'.", fg="green")
+    if sitemap is not None:
+        sitemap_df = pd.read_csv(sitemap)
+        click.secho(message=f"\nUsing sitemap from '{sitemap}'.", fg="green")
+    else:
+        sitemap_df = None
 
     # Create the dictionary to save as a json
     experiment_dict = make_experiment_dictionary(
