@@ -618,23 +618,25 @@ def make_experiment_dictionary(
         if included_chains != "polymer":
             check_chains(get_structure(structure), included_chains.split(" "))
         # Check that the wildtype residues are in the structure
-        perc_matching, perc_missing = check_wildtype_residues(
-            get_structure(structure), mut_metric_df, sitemap_df, excluded_chains
+        perc_matching, perc_missing, count_matching, count_missing = (
+            check_wildtype_residues(
+                get_structure(structure), mut_metric_df, sitemap_df, excluded_chains
+            )
         )
         # Alert the user about the missing and matching residues
         if perc_matching < 0.5:
             color = "red"
-            message = f"Warning: Fewer than {perc_matching*100:.2F}% of the wildtype residues in the data match the corresponding residues in the structure."
+            message = f"Warning: Fewer than {perc_matching*100:.2F}% {count_matching} of the wildtype residues in the data match the corresponding residues in the structure."
         else:
             color = "yellow"
-            message = f"About {perc_matching*100:.2F}% of the wildtype residues in the data match the corresponding residues in the structure."
+            message = f"About {perc_matching*100:.2F}% {count_matching} of the wildtype residues in the data match the corresponding residues in the structure."
         click.secho(message=message, fg=color)
         if perc_missing >= 0.5:
             color = "red"
-            message = f"Warning: {perc_missing*100:.2F}% of the data sites are missing from the structure."
+            message = f"Warning: {perc_missing*100:.2F}% {count_missing} of the data sites are missing from the structure."
         else:
             color = "yellow"
-            message = f"About {perc_missing*100:.2F}% of the data sites are missing from the structure."
+            message = f"About {perc_missing*100:.2F}% {count_missing} of the data sites are missing from the structure."
         click.secho(message=message, fg=color)
 
     # Make a dictionary holding the experiment data
