@@ -3,8 +3,13 @@ name = "configure-dms-viz"
 version = "1.3.2"
 description = "Configure your data for visualization with dms-viz.github.io"
 authors = ["Will Hannon <hannonww@gmail.com>"]
+maintainers = ["Will Hannon <hannonww@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://github.com/dms-viz"
+repository = "https://github.com/dms-viz/configure_dms_viz"
+documentation = "https://dms-viz.github.io/dms-viz-docs/"
+keywords = ["deep mutational scanning", "interactive protein structure", "dms-viz", "dms", "protein"]
 packages = [{ include = "configure_dms_viz" }]
 
 [tool.poetry.dependencies]
