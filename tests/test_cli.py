@@ -1,4 +1,4 @@
-"""Test the command line tool with pytest on a set of datasets."""
+"""Test the command line tool with pytest on a set of examples datasets to check the high-level function of the CLI."""
 
 import os
 import pandas as pd
