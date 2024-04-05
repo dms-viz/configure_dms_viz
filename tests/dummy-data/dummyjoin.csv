@@ -1,4 +1,4 @@
-condition,site,wildtype,mutant,additional_col
+condition,reference_site,wildtype,mutant,additional_col
 A,331,N,A,0.00332
 A,331,N,D,0.002249
 A,331,N,E,0.001125
