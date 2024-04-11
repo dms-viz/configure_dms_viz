@@ -20,6 +20,8 @@ These four examples are:
    Authors: **Yuan Li**, Sarah Arcos, Kimberly R. Sabsay, Aartjan J.W. te Velthuis, **Adam S. Lauring**
    Manuscript: https://www.biorxiv.org/content/10.1101/2023.08.27.554986v1.full
 
+In addition to testing the command line utility and generating example data, there are tests that check each of the main formatting functions are running as expected.
+
 ## Run Tests
 
 To run the tests, run the following command:
