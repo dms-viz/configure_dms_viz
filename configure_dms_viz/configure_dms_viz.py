@@ -429,6 +429,12 @@ def make_experiment_dictionary(
     if not excluded_chains.strip():
         excluded_chains = "none"
 
+    # Make sure that there is no overlap between the included and excluded chains
+    if set(included_chains.split(" ")) & set(excluded_chains.split(" ")):
+        raise ValueError(
+            "The included and excluded chains cannot have any overlap. Please remove the overlapping chains."
+        )
+
     # Check that the necessary columns are present in the mut_metric dataframe and format
     mut_metric_df = format_mutation_data(
         mut_metric_df, metric_col, condition_col, alphabet

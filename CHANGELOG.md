@@ -274,3 +274,21 @@
 ### Removed
 
 - N/A
+
+## [1.3.3] - 2024-04-24
+
+### Added
+
+- Throw an error if the same chains are present in `included` and `excluded` chain lists
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
