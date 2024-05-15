@@ -987,13 +987,10 @@ def join_command(input, output, description):
             )
             return
 
-    # Raise an error if the keys in the input files are not unique
-    if len(combined_data) != len(input):
-        click.secho(
-            "The keys in the input files are not unique. Please ensure that the keys are unique.",
-            fg="red",
-        )
-        return
+    # Raise an error if names of the datasets aren't unique
+    combined_data_keys = list(combined_data.keys())
+    if len(combined_data_keys) != len(set(combined_data_keys)):
+        raise ValueError("Names of the datasets are not unique.")
 
     try:
         # Write the combined data to the specified output file

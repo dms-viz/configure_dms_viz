@@ -292,3 +292,21 @@
 ### Removed
 
 - N/A
+
+## [1.3.4] - 2024-05-15
+
+### Added
+
+- N/A
+
+### Changed
+
+- Fixes a bug where the markdown description was included in the count of keys compared to the number of input files causing the join command to exit before completing.
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
