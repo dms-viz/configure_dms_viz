@@ -310,3 +310,21 @@
 ### Removed
 
 - N/A
+
+## [1.4.0] - 2024-05-15
+
+### Added
+
+- Added a flag to allow users to set the limits of the color scale.
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
