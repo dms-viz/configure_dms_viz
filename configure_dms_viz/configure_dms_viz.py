@@ -357,6 +357,7 @@ def make_experiment_dictionary(
     join_data=None,
     filter_cols=None,
     filter_limits=None,
+    heatmap_limits=None,
     tooltip_cols=None,
     metric_name=None,
     condition_col=None,
@@ -396,6 +397,8 @@ def make_experiment_dictionary(
         A dictionary of column names and formatted names to designate as filters.
     filter_limits: dict or None
         A dictionary of the desired min and max values for each filter column slider range.
+    heatmap_limits: list or None
+        A list of the desired min, max, and center values for the metric to be used for the heatmap's color scale.
     tooltip_cols: dict or None
         A dictionary of column names and formatted names to designate as tooltips.
     included_chains: str or None
@@ -443,15 +446,14 @@ def make_experiment_dictionary(
     # If there is no sitemap dataframe, create a default one
     if sitemap_df is None:
         click.secho(
-            message="Warning: No sitemap dataframe was provided. Creating a default sitemap.",
+            message="Warning: No sitemap dataframe was provided. Creating a default sitemap.\n If no site map is provided, the reference sites will be sorted but may appear out of order.",
             fg="yellow",
         )
+        reference_sites = sorted(list(set(mut_metric_df["reference_site"].to_list())))
         sitemap_df = pd.DataFrame(
             {
-                "reference_site": mut_metric_df["reference_site"].unique(),
-                "sequential_site": range(
-                    1, len(mut_metric_df["reference_site"].unique()) + 1
-                ),
+                "reference_site": reference_sites,
+                "sequential_site": range(1, len(reference_sites) + 1),
             }
         )
 
@@ -468,6 +470,49 @@ def make_experiment_dictionary(
     # Add the condition column to the required columns if it's not None
     if condition_col:
         cols_to_keep.append(condition_col)
+
+    # Check that the heatmap limits are in the correct format
+    if heatmap_limits:
+        # Check that the values are all able to be coerced into numbers
+        for value in heatmap_limits:
+            try:
+                pd.to_numeric(value)
+            except ValueError as err:
+                raise ValueError(
+                    f"The heatmap limit '{value}' cannot be coerced into a number."
+                ) from err
+        # Only the center of the scale is provided
+        if len(heatmap_limits) == 1:
+            click.secho(
+                message="One value was provided for heatmap limits, this will be the center value of the scale.\n",
+                fg="green",
+            )
+        # The min and max are provided
+        elif len(heatmap_limits) == 2:
+            click.secho(
+                message="Two values were provided for heatmap limits, these will be the min and max of the scale.\n",
+                fg="green",
+            )
+            # Check that the values are in the correct order
+            if heatmap_limits[0] > heatmap_limits[1]:
+                raise ValueError(
+                    "The heatmap limits are not specified correctly. The min value must be less than the max value."
+                )
+        # The min, center, and max are provided
+        elif len(heatmap_limits) == 3:
+            click.secho(
+                message="Three values were provided for heatmap limits, these will be the min, center, and max of the scale.\n",
+                fg="green",
+            )
+            # Check that the values are in the correct order
+            if not heatmap_limits[0] < heatmap_limits[1] < heatmap_limits[2]:
+                raise ValueError(
+                    "The heatmap limits are not specified correctly. The min value must be less than the max value and the center value must be in between."
+                )
+        else:
+            raise ValueError(
+                "The heatmap limits must be a list of one, two, or three values."
+            )
 
     # Add the filter columns to the required columns
     if filter_cols:
@@ -657,6 +702,7 @@ def make_experiment_dictionary(
         "excludeChains": excluded_chains.split(" "),
         "filter_cols": filter_cols,
         "filter_limits": filter_limits,
+        "heatmap_limits": heatmap_limits,
         "tooltip_cols": tooltip_cols,
         "excludedAminoAcids": exclude_amino_acids,
         "description": description,
@@ -771,6 +817,13 @@ def cli():
     help="Optionally, a space separated list of columns to use as filters in the visualization. Example: \"{'effect': [min, max], 'times_seen': [min, max]}\"",
 )
 @click.option(
+    "--heatmap-limits",
+    type=ListParamType(),
+    required=False,
+    default=None,
+    help='Optionally, a list of the min, center, and max values for the metric to be used for the heatmap\'s color scale. Example: "[min, center, max]"',
+)
+@click.option(
     "--tooltip-cols",
     type=DictParamType(),
     required=False,
@@ -859,6 +912,7 @@ def format(
     condition_name,
     filter_cols,
     filter_limits,
+    heatmap_limits,
     tooltip_cols,
     join_data,
     included_chains,
@@ -905,6 +959,7 @@ def format(
         join_data_dfs,
         filter_cols,
         filter_limits,
+        heatmap_limits,
         tooltip_cols,
         metric_name,
         condition,

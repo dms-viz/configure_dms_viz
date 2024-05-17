@@ -310,3 +310,23 @@
 ### Removed
 
 - N/A
+
+## [1.4.0] - 2024-05-16
+
+### Added
+
+- Added a flag (--heatmap-limits) to allow users to set the limits of the color scale.
+- Added a human dataset (PTEN VAMPseq)
+- Attempt to sort the reference sites when no sitemap is provided
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
