@@ -446,15 +446,14 @@ def make_experiment_dictionary(
     # If there is no sitemap dataframe, create a default one
     if sitemap_df is None:
         click.secho(
-            message="Warning: No sitemap dataframe was provided. Creating a default sitemap.",
+            message="Warning: No sitemap dataframe was provided. Creating a default sitemap.\n If no site map is provided, the reference sites will be sorted but may appear out of order.",
             fg="yellow",
         )
+        reference_sites = sorted(list(set(mut_metric_df["reference_site"].to_list())))
         sitemap_df = pd.DataFrame(
             {
-                "reference_site": mut_metric_df["reference_site"].unique(),
-                "sequential_site": range(
-                    1, len(mut_metric_df["reference_site"].unique()) + 1
-                ),
+                "reference_site": reference_sites,
+                "sequential_site": range(1, len(reference_sites) + 1),
             }
         )
 

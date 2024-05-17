@@ -9,6 +9,6 @@ configure-dms-viz format \
   --name "PTEN-VAPseq" \
   --metric "score" \
   --metric-name "Score" \
-  --heatmap-limits "-2, 1, 4" \
+  --heatmap-limits "-.5, 1, 1.5" \
   --structure "1D5R" 
 ```

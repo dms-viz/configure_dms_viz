@@ -1,2 +1,2 @@
 input,name,metric,metric_name,structure,heatmap_limits
-tests/PTEN-VAMPseq/input/PTEN-VAMPseq.csv,PTEN-VAPseq,score,Score,1D5R,"-2, 1, 4"
+tests/PTEN-VAMPseq/input/PTEN-VAMPseq.csv,PTEN-VAPseq,score,Score,1D5R,"-.5, 1, 1.5"
