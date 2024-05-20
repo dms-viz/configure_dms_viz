@@ -10,5 +10,5 @@ configure-dms-viz format \
   --metric "score" \
   --metric-name "Score" \
   --heatmap-limits "-.5, 1, 1.5" \
-  --structure "1D5R" 
+  --structure "1D5R"
 ```

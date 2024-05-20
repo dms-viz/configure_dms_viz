@@ -371,6 +371,8 @@ def make_experiment_dictionary(
     exclude_amino_acids=None,
     description=None,
     title=None,
+    floor=None,
+    summary_stat=None,
 ):
     """Take site-level and mutation-level measurements and format into
     a dictionary that can be used to create a JSON file for the visualization.
@@ -419,6 +421,10 @@ def make_experiment_dictionary(
         A short description of the dataset to show in the tool.
     title: str or None
         A short title to appear above the plot.
+    floor: bool or None
+        If True, the floor of the metric will be set to 0 by default.
+    summary_stat: str or None
+        The default summary statistic to display on the plot.
 
     Returns
     -------
@@ -661,6 +667,18 @@ def make_experiment_dictionary(
         mut_metric_df = mut_metric_df.rename(columns={condition_col: condition_name})
         condition_col = condition_name
 
+    # Check that the floor is a valid value
+    if floor is not None:
+        if not isinstance(floor, bool):
+            raise ValueError("The floor value must be a boolean.")
+
+    # Check that the summary statistic is a valid value
+    if summary_stat is not None:
+        if summary_stat not in ["sum", "mean", "median", "max", "min"]:
+            raise ValueError(
+                "The summary statistic must be one of 'sum', 'mean', 'median', 'max', or 'min'."
+            )
+
     # Check that the chains and wildtype residues are in the structure
     if check_pdb:
         if included_chains != "polymer":
@@ -707,6 +725,8 @@ def make_experiment_dictionary(
         "excludedAminoAcids": exclude_amino_acids,
         "description": description,
         "title": title,
+        "floor": floor,
+        "summary_stat": summary_stat,
     }
 
     return experiment_dict
@@ -900,6 +920,20 @@ def cli():
     default=None,
     help="A short title to appear above the plot.",
 )
+@click.option(
+    "--floor",
+    type=bool,
+    required=False,
+    default=None,
+    help="If True, the floor of the metric will be set to 0 by default.",
+)
+@click.option(
+    "--summary-stat",
+    type=str,
+    required=False,
+    default=None,
+    help="The default summary statistic to display on the plot.",
+)
 def format(
     input,
     sitemap,
@@ -924,6 +958,8 @@ def format(
     exclude_amino_acids,
     description,
     title,
+    floor,
+    summary_stat,
 ):
     """Command line interface for creating a JSON file for visualizing protein data"""
     click.secho(
@@ -973,6 +1009,8 @@ def format(
         exclude_amino_acids,
         description,
         title,
+        floor,
+        summary_stat,
     )
 
     # Write the dictionary to a json file

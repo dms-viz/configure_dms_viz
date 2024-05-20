@@ -330,3 +330,22 @@
 ### Removed
 
 - N/A
+
+## [1.5.0] - 2024-05-20
+
+### Added
+
+- Added a flag (--summary-stat) to allow users to set the default summary metric
+- Added a flag (--floor) to allow users to set whether the data is floor by default
+
+### Changed
+
+- N/A
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
