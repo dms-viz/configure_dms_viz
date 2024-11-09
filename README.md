@@ -12,6 +12,10 @@
 
 For more information on getting started with `dms-viz`, check out the [documentation](https://dms-viz.github.io/dms-viz-docs/).
 
+You can read our motivation for creating `dms-viz` in our [JOSS paper](https://doi.org/10.21105/joss.06129). If you use `dms-viz` in published research, please cite us:
+
+> Hannon et al., (2024). *dms-viz*: Structure-informed visualizations for deep mutational scanning and other mutation-based datasets. Journal of Open Source Software, 9(99), 6129, <https://doi.org/10.21105/joss.06129>
+
 ## Prerequisites
 
 To use `configure-dms-viz`, you must ensure that you have the correct version of `Python` (`>= 3.9`) installed on your operating system. You can check this by running:
