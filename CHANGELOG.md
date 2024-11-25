@@ -349,3 +349,21 @@
 ### Removed
 
 - N/A
+
+## [1.6.0] - 2024-11-25
+
+### Added
+
+- N/A
+
+### Changed
+
+- Sort the keys in the output JSON to prevent overhead in `git` diffs. 
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
