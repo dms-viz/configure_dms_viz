@@ -1015,7 +1015,7 @@ def format(
 
     # Write the dictionary to a json file
     with open(output, "w") as f:
-        json.dump({name: experiment_dict}, f)
+        json.dump({name: experiment_dict}, f, sort_keys=True)
 
     click.secho(
         message=f"\nSuccess! The visualization JSON was written to '{output}'",
@@ -1088,7 +1088,7 @@ def join_command(input, output, description):
     try:
         # Write the combined data to the specified output file
         with open(output, "w") as f:
-            json.dump(combined_data, f)
+            json.dump(combined_data, f, sort_keys=True)
     except Exception as e:
         click.secho(f"Failed to write to output file. Error: {str(e)}", fg="red")
         return
