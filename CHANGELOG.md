@@ -367,3 +367,21 @@
 ### Removed
 
 - N/A
+
+## [1.7.0] - 2025-05-16
+
+### Added
+
+- N/A
+
+### Changed
+
+- Sort the condition column values in the output JSON to prevent overhead in `git` diffs. 
+
+### Deprecated
+
+- N/A
+
+### Removed
+
+- N/A
