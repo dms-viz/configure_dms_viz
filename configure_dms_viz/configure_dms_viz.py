@@ -618,7 +618,7 @@ def make_experiment_dictionary(
     if colors is None:
         colors = ["#0072B2", "#CC79A7", "#4C3549", "#009E73"]
     if condition_col:
-        conditions = list(set(mut_metric_df[condition_col]))
+        conditions = sorted(list(set(mut_metric_df[condition_col])))
         if len(conditions) > len(colors):
             raise ValueError(
                 f"There are {len(conditions)} conditions, but only {len(colors)} color(s) specified. Please specify more colors."
